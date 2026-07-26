@@ -1,0 +1,82 @@
+# Built application files
+*.apk
+*.aab
+*.ap_
+
+# ART/Dalvik
+*.dex
+
+# Java/Kotlin compiled files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
+# Gradle
+.gradle/
+build/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local configuration
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Log files
+*.log
+
+# Keystore files
+*.jks
+*.keystore
+*.pem
+
+# Signing configuration
+keystore.properties
+
+# Native build
+.externalNativeBuild/
+.cxx/
+
+# Firebase
+google-services.json
+# Uncomment only if your project should NOT share it.
+# Normally this file IS committed for most public Firebase apps.
+
+# Crashlytics
+com_crashlytics_export_strings.xml
+
+# Kotlin
+.kotlin/
+
+# KSP
+.ksp/
+
+# kapt
+kapt/
+
+# Compose compiler reports (if enabled)
+compose_metrics/
+compose_reports/
+
+# Baseline Profiles generated during benchmarking
+baseline-prof.txt
+
+# Temporary files
+*.tmp
+*.swp
