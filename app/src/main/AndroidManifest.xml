@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NovaPlayer">
         <activity
-            android:name=".MainActivity"
+            android:name=".musicplayer.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.NovaPlayer"
