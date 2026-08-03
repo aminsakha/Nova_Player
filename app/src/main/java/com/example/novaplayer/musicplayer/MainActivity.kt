@@ -1,4 +1,4 @@
-package com.example.novaplayer.core.media.musicplayer
+package com.example.novaplayer.musicplayer
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

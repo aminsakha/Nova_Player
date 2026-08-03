@@ -1,4 +1,4 @@
-package com.example.novaplayer.core.media.musicplayer
+package com.example.novaplayer.musicplayer
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
