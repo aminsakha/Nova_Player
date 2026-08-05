@@ -12,6 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.net.toUri
+import androidx.media3.common.Player
 
 
 @Singleton
@@ -38,12 +39,27 @@ class PlayerController @Inject constructor(
     }
 
     fun play() {
-        controller?.play()
+        controller?.apply {
+            if (
+                playbackState == Player.STATE_IDLE &&
+                currentMediaItem != null
+            ) {
+                prepare()
+            }
+
+            play()
+        }
+
         Log.d("MEDIA3", "playing...")
     }
 
     fun pause() {
         controller?.pause()
+    }
+
+    fun stop() {
+        controller?.stop()
+        Log.d("MEDIA3", "stopped...")
     }
 
     fun seekTo(position: Long) {
