@@ -10,6 +10,9 @@ object Media3Contract {
         data object pause : UiAction
         data class seekTo(val position: Long) : UiAction
         data object playLocal : UiAction
+        data class PlaySelectedSong(
+            val uri: String
+        ) : UiAction
     }
 }
 

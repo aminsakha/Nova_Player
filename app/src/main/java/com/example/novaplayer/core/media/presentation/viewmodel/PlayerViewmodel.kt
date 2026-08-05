@@ -25,9 +25,20 @@ class PlayerViewModel @Inject constructor(
     fun onAction(action: Media3Contract.UiAction) {
         when (action) {
             is Media3Contract.UiAction.play -> play()
+
             is Media3Contract.UiAction.pause -> pause()
-            is Media3Contract.UiAction.seekTo -> seekTo(action.position)
-            is Media3Contract.UiAction.playLocal -> playLocal()
+
+            is Media3Contract.UiAction.seekTo -> {
+                seekTo(action.position)
+            }
+
+            is Media3Contract.UiAction.playLocal -> {
+                playLocal()
+            }
+
+            is Media3Contract.UiAction.PlaySelectedSong -> {
+                playSelectedSong(action.uri)
+            }
         }
     }
 
@@ -66,6 +77,16 @@ class PlayerViewModel @Inject constructor(
     override fun onCleared() {
         playerController.release()
         super.onCleared()
+    }
+
+    private fun playSelectedSong(uri: String) {
+        playerController.playSelectedSong(uri)
+
+        _uiState.update {
+            it.copy(
+                playState = PlayState.playing
+            )
+        }
     }
 
     fun playLocal() {
