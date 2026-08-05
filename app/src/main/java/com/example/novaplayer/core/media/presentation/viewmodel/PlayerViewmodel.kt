@@ -84,7 +84,8 @@ class PlayerViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                playState = PlayState.playing
+                playState = PlayState.playing,
+                selectedSongUri = uri
             )
         }
     }
