@@ -58,6 +58,21 @@ class PlayerController @Inject constructor(
         controller = null
     }
 
+    fun playSelectedSong(uri: String) {
+        if (uri.isBlank()) {
+            Log.e("MEDIA3", "Selected song uri is blank")
+            return
+        }
+
+        controller?.apply {
+            val mediaItem = MediaItem.fromUri(uri)
+
+            setMediaItem(mediaItem)
+            prepare()
+            play()
+        }
+    }
+
     fun playRaw(res: Int) {
         controller?.apply {
             val uri = "android.resource://${context.packageName}/$res".toUri()
