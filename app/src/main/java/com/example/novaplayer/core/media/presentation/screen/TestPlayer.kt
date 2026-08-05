@@ -20,18 +20,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.novaplayer.core.media.presentation.contract.Media3Contract
 import com.example.novaplayer.core.media.presentation.contract.PlayState
 import com.example.novaplayer.core.media.presentation.viewmodel.PlayerViewModel
 import com.example.novaplayer.core.ui.theme.ShapeMedium
 import com.example.novaplayer.core.ui.theme.Space8
+import com.example.novaplayer.R
 
 @Composable
 fun TestPlayer(
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val context = LocalContext.current
+
+    val selectedSongUri =
+        "android.resource://${context.packageName}/${R.raw.vinak}"
 
     val infiniteTransition = rememberInfiniteTransition()
 
@@ -73,7 +80,9 @@ fun TestPlayer(
             enabled = uiState.playState != PlayState.playing,
             onClick = {
                 viewModel.onAction(
-                    Media3Contract.UiAction.playLocal
+                    Media3Contract.UiAction.PlaySelectedSong(
+                        uri = selectedSongUri
+                    )
                 )
             }
         ) {
