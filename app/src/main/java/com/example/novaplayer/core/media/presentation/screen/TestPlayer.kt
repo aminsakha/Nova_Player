@@ -79,11 +79,16 @@ fun TestPlayer(
             shape = ShapeMedium,
             enabled = uiState.playState != PlayState.playing,
             onClick = {
-                viewModel.onAction(
-                    Media3Contract.UiAction.PlaySelectedSong(
-                        uri = selectedSongUri
-                    )
-                )
+                val action =
+                    if (uiState.selectedSongUri == null) {
+                        Media3Contract.UiAction.PlaySelectedSong(
+                            uri = selectedSongUri
+                        )
+                    } else {
+                        Media3Contract.UiAction.play
+                    }
+
+                viewModel.onAction(action)
             }
         ) {
             Text("Play")
