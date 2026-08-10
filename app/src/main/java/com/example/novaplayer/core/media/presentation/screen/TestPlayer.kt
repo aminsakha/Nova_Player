@@ -107,5 +107,20 @@ fun TestPlayer(
         ) {
             Text("Pause")
         }
+
+        Button(
+            modifier = Modifier.fillMaxWidth(0.5f),
+            shape = ShapeMedium,
+            enabled =
+                uiState.selectedSongUri != null &&
+                        uiState.playState != PlayState.stop,
+            onClick = {
+                viewModel.onAction(
+                    Media3Contract.UiAction.stop
+                )
+            }
+        ) {
+            Text("Stop")
+        }
     }
 }
