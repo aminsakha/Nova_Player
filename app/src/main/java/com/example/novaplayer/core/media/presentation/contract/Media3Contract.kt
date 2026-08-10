@@ -9,6 +9,7 @@ object Media3Contract {
     sealed interface UiAction {
         data object play : UiAction
         data object pause : UiAction
+        data object stop : UiAction
         data class seekTo(val position: Long) : UiAction
         data object playLocal : UiAction
         data class PlaySelectedSong(

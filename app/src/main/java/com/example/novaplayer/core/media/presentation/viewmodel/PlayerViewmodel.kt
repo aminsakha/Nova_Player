@@ -28,6 +28,8 @@ class PlayerViewModel @Inject constructor(
 
             is Media3Contract.UiAction.pause -> pause()
 
+            is Media3Contract.UiAction.stop -> stop()
+
             is Media3Contract.UiAction.seekTo -> {
                 seekTo(action.position)
             }
@@ -51,7 +53,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun play() {
+    private fun play() {
         viewModelScope.launch {
             playerController.play()
             _uiState.update { it.copy(playState = PlayState.playing) }
@@ -59,7 +61,7 @@ class PlayerViewModel @Inject constructor(
 
     }
 
-    fun pause() {
+    private fun pause() {
         viewModelScope.launch {
             _uiState.update { it.copy(playState = PlayState.pause) }
             playerController.pause()
@@ -68,7 +70,17 @@ class PlayerViewModel @Inject constructor(
 
     }
 
-    fun seekTo(position: Long) {
+    private fun stop() {
+        playerController.stop()
+
+        _uiState.update {
+            it.copy(
+                playState = PlayState.stop
+            )
+        }
+    }
+
+    private fun seekTo(position: Long) {
         playerController.seekTo(position)
 
     }
@@ -90,7 +102,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun playLocal() {
+    private fun playLocal() {
         viewModelScope.launch {
             playerController.playRaw(R.raw.vinak)
             _uiState.update { it.copy(playState = PlayState.playing) }
