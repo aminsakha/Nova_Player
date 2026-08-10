@@ -3,7 +3,7 @@ package com.example.novaplayer.core.media.presentation.contract
 object Media3Contract {
     data class UiState(
         val playState: PlayState = PlayState.pause,
-        val selectedSongUri: String? = null
+        val selectedSongUri: String? = null,
         val errorMessage: String? = null
     )
 

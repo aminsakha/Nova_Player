@@ -70,6 +70,12 @@ class PlayerViewModel @Inject constructor(
                             } else {
                                 currentState.playState
                             },
+                        selectedSongUri =
+                            if (errorMessage != null) {
+                                null
+                            } else {
+                                currentState.selectedSongUri
+                            },
                         errorMessage = errorMessage
                     )
                 }

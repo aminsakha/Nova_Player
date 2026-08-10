@@ -73,6 +73,31 @@ fun TestPlayer(
 
         Spacer(modifier = Modifier.height(Space8))
 
+        uiState.errorMessage?.let { errorMessage ->
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error
+            )
+
+            Spacer(
+                modifier = Modifier.height(Space8)
+            )
+
+            Button(
+                onClick = {
+                    viewModel.onAction(
+                        Media3Contract.UiAction.ClearError
+                    )
+                }
+            ) {
+                Text("Dismiss error")
+            }
+
+            Spacer(
+                modifier = Modifier.height(Space8)
+            )
+        }
+
 
         Button(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -121,6 +146,20 @@ fun TestPlayer(
             }
         ) {
             Text("Stop")
+        }
+
+        Button(
+            modifier = Modifier.fillMaxWidth(0.5f),
+            shape = ShapeMedium,
+            onClick = {
+                viewModel.onAction(
+                    Media3Contract.UiAction.PlaySelectedSong(
+                        uri = "file:///missing-audio-file.mp3"
+                    )
+                )
+            }
+        ) {
+            Text("Test playback error")
         }
     }
 }
