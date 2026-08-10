@@ -31,6 +31,22 @@ class PlayerController @Inject constructor(
     val playbackError: StateFlow<String?> =
         mutablePlaybackError.asStateFlow()
 
+    private val playerListener = object : Player.Listener {
+
+        override fun onPlayerError(error: PlaybackException) {
+            val message =
+                error.message ?: "Playback failed"
+
+            mutablePlaybackError.value = message
+
+            Log.e(
+                "MEDIA3",
+                message,
+                error
+            )
+        }
+    }
+
     //connect to my service
     suspend fun connect() {
         val sessionToken = SessionToken(
@@ -43,8 +59,9 @@ class PlayerController @Inject constructor(
         controller = MediaController.Builder(
             context,
             sessionToken
-        ).buildAsync().await()
-        Log.d("MEDIA3", "controller created...")
+        ).buildAsync().await().also { mediaController ->
+            mediaController.addListener(playerListener)
+        }
 
     }
 
@@ -80,22 +97,40 @@ class PlayerController @Inject constructor(
     fun isPlaying()=controller?.isPlaying
 
     fun release() {
+        controller?.removeListener(playerListener)
         controller?.release()
         controller = null
     }
 
     fun playSelectedSong(uri: String) {
         if (uri.isBlank()) {
-            Log.e("MEDIA3", "Selected song uri is blank")
+            reportPlaybackError(
+                "Selected song URI is empty"
+            )
             return
         }
 
-        controller?.apply {
+        val mediaController = controller
+
+        if (mediaController == null) {
+            reportPlaybackError(
+                "Player is not connected"
+            )
+            return
+        }
+
+        clearPlaybackError()
+
+        try {
             val mediaItem = MediaItem.fromUri(uri)
 
-            setMediaItem(mediaItem)
-            prepare()
-            play()
+            mediaController.setMediaItem(mediaItem)
+            mediaController.prepare()
+            mediaController.play()
+        } catch (error: Exception) {
+            reportPlaybackError(
+                error.message ?: "Unable to play selected song"
+            )
         }
     }
 
@@ -107,5 +142,17 @@ class PlayerController @Inject constructor(
             prepare()
             play()
         }
+    }
+    fun clearPlaybackError() {
+        mutablePlaybackError.value = null
+    }
+
+    private fun reportPlaybackError(message: String) {
+        mutablePlaybackError.value = message
+
+        Log.e(
+            "MEDIA3",
+            message
+        )
     }
 }
