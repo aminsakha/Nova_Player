@@ -13,6 +13,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.net.toUri
 import androidx.media3.common.Player
+import androidx.media3.common.PlaybackException
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 
 @Singleton
@@ -20,6 +24,12 @@ class PlayerController @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private var controller: MediaController? = null
+
+    private val mutablePlaybackError =
+        MutableStateFlow<String?>(null)
+
+    val playbackError: StateFlow<String?> =
+        mutablePlaybackError.asStateFlow()
 
     //connect to my service
     suspend fun connect() {
