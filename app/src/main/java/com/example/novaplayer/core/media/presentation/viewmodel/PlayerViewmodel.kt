@@ -41,6 +41,10 @@ class PlayerViewModel @Inject constructor(
             is Media3Contract.UiAction.PlaySelectedSong -> {
                 playSelectedSong(action.uri)
             }
+
+            is Media3Contract.UiAction.ClearError -> {
+                clearError()
+            }
         }
     }
 
@@ -49,8 +53,32 @@ class PlayerViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             playerController.connect()
-            Log.d("MEDIA3", "controller connected...")
+
+            Log.d(
+                "MEDIA3",
+                "controller connected..."
+            )
         }
+
+        viewModelScope.launch {
+            playerController.playbackError.collect { errorMessage ->
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        playState =
+                            if (errorMessage != null) {
+                                PlayState.pause
+                            } else {
+                                currentState.playState
+                            },
+                        errorMessage = errorMessage
+                    )
+                }
+            }
+        }
+    }
+
+    private fun clearError() {
+        playerController.clearPlaybackError()
     }
 
     private fun play() {

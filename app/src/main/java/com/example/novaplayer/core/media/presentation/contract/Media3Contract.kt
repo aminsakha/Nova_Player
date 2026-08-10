@@ -4,6 +4,7 @@ object Media3Contract {
     data class UiState(
         val playState: PlayState = PlayState.pause,
         val selectedSongUri: String? = null
+        val errorMessage: String? = null
     )
 
     sealed interface UiAction {
@@ -15,6 +16,7 @@ object Media3Contract {
         data class PlaySelectedSong(
             val uri: String
         ) : UiAction
+        data object ClearError : UiAction
     }
 }
 
