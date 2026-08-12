@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.novaplayer.core.media.presentation.screen.TestPlayer
+import com.example.novaplayer.core.media.presentation.screen.PlayerScreen
 import com.example.novaplayer.core.ui.theme.NovaPlayerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                         contentAlignment = Alignment.Center
                     ) {
 
-                        TestPlayer()
+                        PlayerScreen()
                     }
                 }
             }
