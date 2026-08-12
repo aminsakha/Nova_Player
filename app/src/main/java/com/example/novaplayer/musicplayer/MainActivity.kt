@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import com.example.novaplayer.core.media.presentation.screen.PlayerScreen
 import com.example.novaplayer.core.ui.theme.NovaPlayerTheme
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.ui.platform.LocalContext
+import com.example.novaplayer.R
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -20,6 +22,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val context = LocalContext.current
+
+            val selectedSongUri =
+                "android.resource://${context.packageName}/${R.raw.vinak}"
             NovaPlayerTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
@@ -30,7 +36,9 @@ class MainActivity : ComponentActivity() {
                         contentAlignment = Alignment.Center
                     ) {
 
-                        PlayerScreen()
+                        PlayerScreen(
+                            songUri = selectedSongUri
+                        )
                     }
                 }
             }
