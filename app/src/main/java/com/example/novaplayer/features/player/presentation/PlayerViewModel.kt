@@ -23,6 +23,10 @@ class PlayerViewModel @Inject constructor(
     val uiState: StateFlow<PlayerContract.UiState> =
         _uiState.asStateFlow()
 
+    private var isPlayerConnected = false
+
+    private var pendingSong: CurrentSong? = null
+
     init {
         connectToPlayer()
         observePlaybackErrors()
@@ -66,6 +70,13 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 playerController.connect()
+            }.onSuccess {
+                isPlayerConnected = true
+
+                pendingSong?.let { song ->
+                    pendingSong = null
+                    startSelectedSong(song)
+                }
             }.onFailure { error ->
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -99,6 +110,26 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun selectSong(
+        song: CurrentSong
+    ) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                currentSong = song,
+                playbackStatus =
+                    PlaybackStatus.PAUSED,
+                currentPositionMs = 0L,
+                errorMessage = null
+            )
+        }
+
+        if (isPlayerConnected) {
+            startSelectedSong(song)
+        } else {
+            pendingSong = song
+        }
+    }
+
+    private fun startSelectedSong(
         song: CurrentSong
     ) {
         playerController.playSelectedSong(
