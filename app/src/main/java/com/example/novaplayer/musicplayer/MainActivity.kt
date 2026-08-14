@@ -8,36 +8,52 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.novaplayer.core.media.presentation.screen.PlayerScreen
-import com.example.novaplayer.core.ui.theme.NovaPlayerTheme
-import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.ui.platform.LocalContext
 import com.example.novaplayer.R
+import com.example.novaplayer.core.ui.theme.NovaPlayerTheme
+import com.example.novaplayer.features.player.domain.CurrentSong
+import com.example.novaplayer.features.player.presentation.PlayerScreen
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             val context = LocalContext.current
 
-            val selectedSongUri =
-                "android.resource://${context.packageName}/${R.raw.vinak}"
-            NovaPlayerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            val selectedSong = remember(
+                context.packageName
+            ) {
+                CurrentSong(
+                    uri =
+                        "android.resource://" +
+                                "${context.packageName}/" +
+                                "${R.raw.vinak}",
+                    title = "Vinak",
+                    artist = "Karam Hite",
+                    artworkData = null
+                )
+            }
 
+            NovaPlayerTheme {
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
                         contentAlignment = Alignment.Center
                     ) {
-
                         PlayerScreen(
-                            songUri = selectedSongUri
+                            selectedSong = selectedSong
                         )
                     }
                 }
@@ -45,4 +61,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
