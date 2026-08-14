@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.novaplayer.features.player.components.AlbumArtwork
+import com.example.novaplayer.features.player.components.PlayerControls
 import com.example.novaplayer.features.player.domain.CurrentSong
 
 @Composable
@@ -41,6 +42,7 @@ fun PlayerScreen(
     PlayerScreenContent(
         uiState = uiState,
         fallbackSong = selectedSong,
+        onAction = viewModel::onAction,
         modifier = modifier
     )
 }
@@ -49,6 +51,7 @@ fun PlayerScreen(
 private fun PlayerScreenContent(
     uiState: PlayerContract.UiState,
     fallbackSong: CurrentSong,
+    onAction: (PlayerContract.UiAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val currentSong =
@@ -75,6 +78,30 @@ private fun PlayerScreenContent(
         CurrentSongInformation(
             title = currentSong.title,
             artist = currentSong.artist
+        )
+
+        Spacer(
+            modifier = Modifier.height(32.dp)
+        )
+
+        PlayerControls(
+            isPlaying =
+                uiState.playbackStatus == PlaybackStatus.PLAYING,
+            onPlayPauseClick = {
+                onAction(
+                    PlayerContract.UiAction.PlayPause
+                )
+            },
+            onPreviousClick = {
+                onAction(
+                    PlayerContract.UiAction.Previous
+                )
+            },
+            onNextClick = {
+                onAction(
+                    PlayerContract.UiAction.Next
+                )
+            }
         )
     }
 }
@@ -110,8 +137,7 @@ private fun CurrentSongInformation(
                 "Unknown artist"
             },
             style = MaterialTheme.typography.bodyLarge,
-            color =
-                MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -119,4 +145,3 @@ private fun CurrentSongInformation(
         )
     }
 }
-

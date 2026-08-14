@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +40,7 @@ fun PlayerControls(
             )
         }
 
-        FilledIconButton(
+        IconButton(
             onClick = onPlayPauseClick,
             modifier = Modifier.size(72.dp)
         ) {
@@ -58,7 +57,8 @@ fun PlayerControls(
                 } else {
                     "Play"
                 },
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(36.dp),
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
 
