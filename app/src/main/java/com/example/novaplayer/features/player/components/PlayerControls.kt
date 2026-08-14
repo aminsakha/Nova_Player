@@ -33,7 +33,7 @@ fun PlayerControls(
         ) {
             Icon(
                 painter = painterResource(
-                    id = android.R.drawable.ic_media_previous
+                    id = android.R.drawable.ic_media_rew
                 ),
                 contentDescription = "Previous song",
                 modifier = Modifier.size(32.dp),
@@ -68,7 +68,7 @@ fun PlayerControls(
         ) {
             Icon(
                 painter = painterResource(
-                    id = android.R.drawable.ic_media_next
+                    id = android.R.drawable.ic_media_ff
                 ),
                 contentDescription = "Next song",
                 modifier = Modifier.size(32.dp),
