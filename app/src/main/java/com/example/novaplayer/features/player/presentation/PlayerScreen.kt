@@ -27,6 +27,10 @@ import com.example.novaplayer.R
 import com.example.novaplayer.features.player.components.AlbumArtwork
 import com.example.novaplayer.features.player.components.PlayerControls
 import com.example.novaplayer.features.player.domain.CurrentSong
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
 
 @Composable
 fun PlayerScreen(
@@ -38,6 +42,11 @@ fun PlayerScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val snackbarHostState =
+        remember {
+            SnackbarHostState()
+        }
+
     LaunchedEffect(selectedSong.uri) {
         viewModel.onAction(
             PlayerContract.UiAction.SelectSong(
@@ -46,14 +55,42 @@ fun PlayerScreen(
         )
     }
 
-    PlayerScreenContent(
-        uiState = uiState,
-        fallbackSong = selectedSong,
-        isFavorite = isFavorite,
-        onFavoriteClick = onFavoriteClick,
-        onAction = viewModel::onAction,
-        modifier = modifier
-    )
+    LaunchedEffect(uiState.errorMessage) {
+        val errorMessage =
+            uiState.errorMessage
+                ?: return@LaunchedEffect
+
+        snackbarHostState.showSnackbar(
+            message = errorMessage
+        )
+
+        viewModel.onAction(
+            PlayerContract.UiAction.ClearError
+        )
+    }
+
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        PlayerScreenContent(
+            uiState = uiState,
+            fallbackSong = selectedSong,
+            isFavorite = isFavorite,
+            onFavoriteClick = onFavoriteClick,
+            onAction = viewModel::onAction,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(
+                    horizontal = 16.dp,
+                    vertical = 16.dp
+                )
+        )
+    }
 }
 
 @Composable
