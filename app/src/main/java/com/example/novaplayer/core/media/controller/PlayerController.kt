@@ -17,6 +17,7 @@ import androidx.media3.common.PlaybackException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import androidx.media3.common.C
 
 
 @Singleton
@@ -92,6 +93,28 @@ class PlayerController @Inject constructor(
     fun seekTo(position: Long) {
         controller?.seekTo(position)
 
+    }
+
+    fun getCurrentPosition(): Long {
+        return controller
+            ?.currentPosition
+            ?.coerceAtLeast(0L)
+            ?: 0L
+    }
+
+    fun getDuration(): Long {
+        val playerDuration =
+            controller?.duration
+                ?: C.TIME_UNSET
+
+        return if (
+            playerDuration == C.TIME_UNSET ||
+            playerDuration < 0L
+        ) {
+            0L
+        } else {
+            playerDuration
+        }
     }
 
     fun isPlaying()=controller?.isPlaying

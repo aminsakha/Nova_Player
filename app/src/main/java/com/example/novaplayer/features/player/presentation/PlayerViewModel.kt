@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
@@ -30,6 +32,7 @@ class PlayerViewModel @Inject constructor(
     init {
         connectToPlayer()
         observePlaybackErrors()
+        observePlaybackProgress()
     }
 
     fun onAction(
@@ -110,7 +113,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun selectSong(
-        song: CurrentSong
+        song: CurrentSong,
     ) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -118,6 +121,7 @@ class PlayerViewModel @Inject constructor(
                 playbackStatus =
                     PlaybackStatus.PAUSED,
                 currentPositionMs = 0L,
+                durationMs = 0L,
                 errorMessage = null
             )
         }
@@ -226,6 +230,44 @@ class PlayerViewModel @Inject constructor(
                 errorMessage =
                     "Playback queue is not available yet"
             )
+        }
+    }
+
+    private fun observePlaybackProgress() {
+        viewModelScope.launch {
+            while (isActive) {
+                if (isPlayerConnected) {
+                    val currentPosition =
+                        playerController
+                            .getCurrentPosition()
+
+                    val duration =
+                        playerController
+                            .getDuration()
+
+                    val safePosition =
+                        if (duration > 0L) {
+                            currentPosition.coerceIn(
+                                minimumValue = 0L,
+                                maximumValue = duration
+                            )
+                        } else {
+                            currentPosition
+                                .coerceAtLeast(0L)
+                        }
+
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            currentPositionMs =
+                                safePosition,
+                            durationMs =
+                                duration
+                        )
+                    }
+                }
+
+                delay(250L)
+            }
         }
     }
 
