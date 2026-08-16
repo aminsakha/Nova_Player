@@ -1,5 +1,8 @@
 package com.example.novaplayer.features.player.components
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,16 +13,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
@@ -126,67 +130,154 @@ private fun PlaybackSeekBar(
             maximumValue = safeDuration
         )
 
-    var sliderPosition by remember {
-        mutableStateOf(0f)
+    var draggedPosition by remember {
+        mutableStateOf<Long?>(null)
     }
-
-    var isDragging by remember {
-        mutableStateOf(false)
-    }
-
-    LaunchedEffect(
-        safePosition,
-        safeDuration
-    ) {
-        if (!isDragging) {
-            sliderPosition =
-                safePosition.toFloat()
-        }
-    }
-
-    val maximumSliderValue =
-        safeDuration
-            .toFloat()
-            .coerceAtLeast(1f)
 
     val displayedPosition =
-        if (isDragging) {
-            sliderPosition
-                .toLong()
-                .coerceIn(0L, safeDuration)
-        } else {
-            safePosition
-        }
+        draggedPosition ?: safePosition
 
-    val remainingTime =
-        (safeDuration - displayedPosition)
-            .coerceAtLeast(0L)
+    val progress =
+        if (safeDuration > 0L) {
+            displayedPosition.toFloat() /
+                    safeDuration.toFloat()
+        } else {
+            0f
+        }.coerceIn(0f, 1f)
+
+    val activeColor =
+        MaterialTheme.colorScheme.primary
+
+    val inactiveColor =
+        MaterialTheme.colorScheme.onSurface.copy(
+            alpha = 0.30f
+        )
+
+    val thumbBorderColor =
+        MaterialTheme.colorScheme.background
 
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        Slider(
-            value = sliderPosition.coerceIn(
-                minimumValue = 0f,
-                maximumValue = maximumSliderValue
-            ),
-            onValueChange = { newPosition ->
-                isDragging = true
-                sliderPosition = newPosition
-            },
-            onValueChangeFinished = {
-                if (safeDuration > 0L) {
-                    onSeekTo(
-                        sliderPosition.toLong()
-                    )
-                }
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(20.dp)
+                .pointerInput(safeDuration) {
+                    if (safeDuration <= 0L) {
+                        return@pointerInput
+                    }
 
-                isDragging = false
-            },
-            valueRange = 0f..maximumSliderValue,
-            enabled = safeDuration > 0L,
-            modifier = Modifier.fillMaxWidth()
-        )
+                    awaitEachGesture {
+                        val down =
+                            awaitFirstDown(
+                                requireUnconsumed = false
+                            )
+
+                        var targetPosition =
+                            calculateSeekPosition(
+                                touchPositionX =
+                                    down.position.x,
+                                trackWidth =
+                                    size.width.toFloat(),
+                                durationMs =
+                                    safeDuration
+                            )
+
+                        draggedPosition =
+                            targetPosition
+
+                        down.consume()
+
+                        var pointerIsPressed = true
+
+                        while (pointerIsPressed) {
+                            val event =
+                                awaitPointerEvent()
+
+                            val change =
+                                event.changes.firstOrNull()
+
+                            if (change == null) {
+                                pointerIsPressed = false
+                            } else {
+                                targetPosition =
+                                    calculateSeekPosition(
+                                        touchPositionX =
+                                            change.position.x,
+                                        trackWidth =
+                                            size.width.toFloat(),
+                                        durationMs =
+                                            safeDuration
+                                    )
+
+                                draggedPosition =
+                                    targetPosition
+
+                                pointerIsPressed =
+                                    change.pressed
+
+                                change.consume()
+                            }
+                        }
+
+                        onSeekTo(targetPosition)
+                        draggedPosition = null
+                    }
+                }
+        ) {
+            val centerY =
+                size.height / 2f
+
+            val progressX =
+                size.width * progress
+
+            drawLine(
+                color = inactiveColor,
+                start = Offset(
+                    x = 0f,
+                    y = centerY
+                ),
+                end = Offset(
+                    x = size.width,
+                    y = centerY
+                ),
+                strokeWidth = 2.dp.toPx(),
+                cap = StrokeCap.Round
+            )
+
+            drawLine(
+                color = activeColor,
+                start = Offset(
+                    x = 0f,
+                    y = centerY
+                ),
+                end = Offset(
+                    x = progressX,
+                    y = centerY
+                ),
+                strokeWidth = 2.dp.toPx(),
+                cap = StrokeCap.Round
+            )
+
+            drawCircle(
+                color = thumbBorderColor,
+                radius = 6.dp.toPx(),
+                center = Offset(
+                    x = progressX,
+                    y = centerY
+                )
+            )
+
+            drawCircle(
+                color = activeColor,
+                radius = 5.dp.toPx(),
+                center = Offset(
+                    x = progressX,
+                    y = centerY
+                )
+            )
+        }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -203,6 +294,10 @@ private fun PlaybackSeekBar(
                     MaterialTheme.colorScheme.onSurfaceVariant
             )
 
+            val remainingTime =
+                (safeDuration - displayedPosition)
+                    .coerceAtLeast(0L)
+
             Text(
                 text = if (safeDuration > 0L) {
                     "-${formatPlaybackTime(remainingTime)}"
@@ -216,6 +311,28 @@ private fun PlaybackSeekBar(
             )
         }
     }
+}
+
+private fun calculateSeekPosition(
+    touchPositionX: Float,
+    trackWidth: Float,
+    durationMs: Long
+): Long {
+    if (
+        trackWidth <= 0f ||
+        durationMs <= 0L
+    ) {
+        return 0L
+    }
+
+    val progress =
+        (touchPositionX / trackWidth)
+            .coerceIn(0f, 1f)
+
+    return (
+            durationMs.toDouble() *
+                    progress.toDouble()
+            ).toLong()
 }
 
 private fun formatPlaybackTime(
