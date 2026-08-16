@@ -87,6 +87,10 @@ private fun PlayerScreenContent(
         PlayerControls(
             isPlaying =
                 uiState.playbackStatus == PlaybackStatus.PLAYING,
+            currentPositionMs =
+                uiState.currentPositionMs,
+            durationMs =
+                uiState.durationMs,
             onPlayPauseClick = {
                 onAction(
                     PlayerContract.UiAction.PlayPause
@@ -100,6 +104,13 @@ private fun PlayerScreenContent(
             onNextClick = {
                 onAction(
                     PlayerContract.UiAction.Next
+                )
+            },
+            onSeekTo = { positionMs ->
+                onAction(
+                    PlayerContract.UiAction.SeekTo(
+                        positionMs = positionMs
+                    )
                 )
             }
         )
