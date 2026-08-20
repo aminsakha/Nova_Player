@@ -11,8 +11,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import com.example.novaplayer.R
+import com.example.novaplayer.core.media.presentation.screen.TestPlayer
+import com.example.novaplayer.core.navigation.NovaPlayerNavigation
 import com.example.novaplayer.core.ui.theme.NovaPlayerTheme
 import com.example.novaplayer.features.player.domain.CurrentSong
 import com.example.novaplayer.features.player.presentation.PlayerScreen

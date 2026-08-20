@@ -22,12 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.novaplayer.R
+import com.example.novaplayer.core.media.model.PlaybackError
 import com.example.novaplayer.core.media.presentation.contract.Media3Contract
 import com.example.novaplayer.core.media.presentation.contract.PlayState
 import com.example.novaplayer.core.media.presentation.viewmodel.PlayerViewModel
 import com.example.novaplayer.core.ui.theme.ShapeMedium
 import com.example.novaplayer.core.ui.theme.Space8
-import com.example.novaplayer.R
 
 @Composable
 fun TestPlayer(
@@ -40,7 +41,8 @@ fun TestPlayer(
     val selectedSongUri =
         "android.resource://${context.packageName}/${R.raw.vinak}"
 
-    val infiniteTransition = rememberInfiniteTransition()
+    val infiniteTransition =
+        rememberInfiniteTransition()
 
     val scale by infiniteTransition.animateFloat(
         initialValue = 0.8f,
@@ -51,31 +53,31 @@ fun TestPlayer(
         )
     )
 
-    val iconScale = if (uiState.playState == PlayState.playing) {
-        scale
-    } else {
-        1f
-    }
-
+    val iconScale =
+        if (uiState.playState == PlayState.playing) {
+            scale
+        } else {
+            1f
+        }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-
         Text(
-            text = "🎵",
+            text = "\uD83C\uDFB5",
             style = MaterialTheme.typography.displayLarge,
             modifier = Modifier.scale(iconScale)
         )
 
+        Spacer(
+            modifier = Modifier.height(Space8)
+        )
 
-        Spacer(modifier = Modifier.height(Space8))
-
-        uiState.errorMessage?.let { errorMessage ->
+        uiState.playbackError?.let { playbackError ->
             Text(
-                text = errorMessage,
+                text = playbackError.toUserMessage(),
                 color = MaterialTheme.colorScheme.error
             )
 
@@ -98,17 +100,18 @@ fun TestPlayer(
             )
         }
 
-
         Button(
             modifier = Modifier.fillMaxWidth(0.5f),
             shape = ShapeMedium,
-            enabled = uiState.playState != PlayState.playing,
+            enabled =
+                uiState.playState != PlayState.playing,
             onClick = {
                 val action =
                     if (uiState.selectedSongUri == null) {
-                        Media3Contract.UiAction.PlaySelectedSong(
-                            uri = selectedSongUri
-                        )
+                        Media3Contract.UiAction
+                            .PlaySelectedSong(
+                                uri = selectedSongUri
+                            )
                     } else {
                         Media3Contract.UiAction.play
                     }
@@ -119,11 +122,11 @@ fun TestPlayer(
             Text("Play")
         }
 
-
         Button(
             modifier = Modifier.fillMaxWidth(0.5f),
             shape = ShapeMedium,
-            enabled = uiState.playState == PlayState.playing,
+            enabled =
+                uiState.playState == PlayState.playing,
             onClick = {
                 viewModel.onAction(
                     Media3Contract.UiAction.pause
@@ -153,13 +156,43 @@ fun TestPlayer(
             shape = ShapeMedium,
             onClick = {
                 viewModel.onAction(
-                    Media3Contract.UiAction.PlaySelectedSong(
-                        uri = "file:///missing-audio-file.mp3"
-                    )
+                    Media3Contract.UiAction
+                        .PlaySelectedSong(
+                            uri =
+                                "file:///missing-audio-file.mp3"
+                        )
                 )
             }
         ) {
             Text("Test playback error")
+        }
+    }
+}
+
+private fun PlaybackError.toUserMessage(): String {
+    return when (this) {
+        PlaybackError.EmptySongUri -> {
+            "Selected song URI is empty"
+        }
+
+        PlaybackError.PlayerNotConnected -> {
+            "Player is not connected"
+        }
+
+        PlaybackError.InvalidSongUri -> {
+            "The selected song address is invalid"
+        }
+
+        PlaybackError.PermissionDenied -> {
+            "Permission to access this song was denied"
+        }
+
+        PlaybackError.InvalidPlayerState -> {
+            "The player is not ready"
+        }
+
+        is PlaybackError.PlaybackFailed -> {
+            "Playback failed. Error code: $errorCode"
         }
     }
 }
