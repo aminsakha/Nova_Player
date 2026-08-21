@@ -20,7 +20,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.novaplayer.R
+import com.example.novaplayer.core.media.model.PlaybackError
 import com.example.novaplayer.core.media.presentation.contract.Media3Contract
 import com.example.novaplayer.core.media.presentation.contract.PlayState
 import com.example.novaplayer.core.media.presentation.viewmodel.PlayerViewModel
@@ -33,7 +36,13 @@ fun TestPlayer(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    val infiniteTransition = rememberInfiniteTransition()
+    val context = LocalContext.current
+
+    val selectedSongUri =
+        "android.resource://${context.packageName}/${R.raw.vinak}"
+
+    val infiniteTransition =
+        rememberInfiniteTransition()
 
     val scale by infiniteTransition.animateFloat(
         initialValue = 0.8f,
@@ -44,47 +53,80 @@ fun TestPlayer(
         )
     )
 
-    val iconScale = if (uiState.playState == PlayState.playing) {
-        scale
-    } else {
-        1f
-    }
-
+    val iconScale =
+        if (uiState.playState == PlayState.playing) {
+            scale
+        } else {
+            1f
+        }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-
         Text(
-            text = "🎵",
+            text = "\uD83C\uDFB5",
             style = MaterialTheme.typography.displayLarge,
             modifier = Modifier.scale(iconScale)
         )
 
+        Spacer(
+            modifier = Modifier.height(Space8)
+        )
 
-        Spacer(modifier = Modifier.height(Space8))
+        uiState.playbackError?.let { playbackError ->
+            Text(
+                text = playbackError.toUserMessage(),
+                color = MaterialTheme.colorScheme.error
+            )
 
+            Spacer(
+                modifier = Modifier.height(Space8)
+            )
+
+            Button(
+                onClick = {
+                    viewModel.onAction(
+                        Media3Contract.UiAction.ClearError
+                    )
+                }
+            ) {
+                Text("Dismiss error")
+            }
+
+            Spacer(
+                modifier = Modifier.height(Space8)
+            )
+        }
 
         Button(
             modifier = Modifier.fillMaxWidth(0.5f),
             shape = ShapeMedium,
-            enabled = uiState.playState != PlayState.playing,
+            enabled =
+                uiState.playState != PlayState.playing,
             onClick = {
-                viewModel.onAction(
-                    Media3Contract.UiAction.playLocal
-                )
+                val action =
+                    if (uiState.selectedSongUri == null) {
+                        Media3Contract.UiAction
+                            .PlaySelectedSong(
+                                uri = selectedSongUri
+                            )
+                    } else {
+                        Media3Contract.UiAction.play
+                    }
+
+                viewModel.onAction(action)
             }
         ) {
             Text("Play")
         }
 
-
         Button(
             modifier = Modifier.fillMaxWidth(0.5f),
             shape = ShapeMedium,
-            enabled = uiState.playState == PlayState.playing,
+            enabled =
+                uiState.playState == PlayState.playing,
             onClick = {
                 viewModel.onAction(
                     Media3Contract.UiAction.pause
@@ -92,6 +134,65 @@ fun TestPlayer(
             }
         ) {
             Text("Pause")
+        }
+
+        Button(
+            modifier = Modifier.fillMaxWidth(0.5f),
+            shape = ShapeMedium,
+            enabled =
+                uiState.selectedSongUri != null &&
+                        uiState.playState != PlayState.stop,
+            onClick = {
+                viewModel.onAction(
+                    Media3Contract.UiAction.stop
+                )
+            }
+        ) {
+            Text("Stop")
+        }
+
+        Button(
+            modifier = Modifier.fillMaxWidth(0.5f),
+            shape = ShapeMedium,
+            onClick = {
+                viewModel.onAction(
+                    Media3Contract.UiAction
+                        .PlaySelectedSong(
+                            uri =
+                                "file:///missing-audio-file.mp3"
+                        )
+                )
+            }
+        ) {
+            Text("Test playback error")
+        }
+    }
+}
+
+private fun PlaybackError.toUserMessage(): String {
+    return when (this) {
+        PlaybackError.EmptySongUri -> {
+            "Selected song URI is empty"
+        }
+
+        PlaybackError.PlayerNotConnected -> {
+            "Player is not connected"
+        }
+
+        PlaybackError.InvalidSongUri -> {
+            "The selected song address is invalid"
+        }
+
+        PlaybackError.PermissionDenied -> {
+            "Permission to access this song was denied"
+        }
+
+        PlaybackError.InvalidPlayerState -> {
+            "The player is not ready"
+        }
+
+        is PlaybackError.PlaybackFailed -> {
+            "Playback failed. Error code: $errorCode"
         }
     }
 }

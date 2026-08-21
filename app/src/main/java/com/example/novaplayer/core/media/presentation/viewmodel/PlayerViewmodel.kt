@@ -19,62 +19,151 @@ import kotlinx.coroutines.launch
 class PlayerViewModel @Inject constructor(
     private val playerController: PlayerController
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(Media3Contract.UiState())
-    val uiState: StateFlow<Media3Contract.UiState> = _uiState.asStateFlow()
 
-    fun onAction(action: Media3Contract.UiAction) {
+    private val _uiState =
+        MutableStateFlow(Media3Contract.UiState())
+
+    val uiState: StateFlow<Media3Contract.UiState> =
+        _uiState.asStateFlow()
+
+    init {
+        connectToPlayer()
+        observePlaybackErrors()
+    }
+
+    fun onAction(
+        action: Media3Contract.UiAction
+    ) {
         when (action) {
-            is Media3Contract.UiAction.play -> play()
-            is Media3Contract.UiAction.pause -> pause()
-            is Media3Contract.UiAction.seekTo -> seekTo(action.position)
-            is Media3Contract.UiAction.playLocal -> playLocal()
+            Media3Contract.UiAction.play -> {
+                play()
+            }
+
+            Media3Contract.UiAction.pause -> {
+                pause()
+            }
+
+            Media3Contract.UiAction.stop -> {
+                stop()
+            }
+
+            is Media3Contract.UiAction.seekTo -> {
+                seekTo(action.position)
+            }
+
+            Media3Contract.UiAction.playLocal -> {
+                playLocal()
+            }
+
+            is Media3Contract.UiAction.PlaySelectedSong -> {
+                playSelectedSong(action.uri)
+            }
+
+            Media3Contract.UiAction.ClearError -> {
+                clearError()
+            }
         }
     }
 
-
-    //first operation
-    init {
+    private fun connectToPlayer() {
         viewModelScope.launch {
             playerController.connect()
-            Log.d("MEDIA3", "controller connected...")
+
+            Log.d(
+                TAG,
+                "Controller connected"
+            )
         }
     }
 
-    fun play() {
+    private fun observePlaybackErrors() {
         viewModelScope.launch {
-            playerController.play()
-            _uiState.update { it.copy(playState = PlayState.playing) }
-        }
+            playerController.playbackErrors.collect {
+                    playbackError ->
 
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        playState = PlayState.pause,
+                        selectedSongUri = null,
+                        playbackError = playbackError
+                    )
+                }
+            }
+        }
     }
 
-    fun pause() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(playState = PlayState.pause) }
-            playerController.pause()
-
+    private fun clearError() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                playbackError = null
+            )
         }
-
     }
 
-    fun seekTo(position: Long) {
+    private fun play() {
+        playerController.play()
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                playState = PlayState.playing,
+                playbackError = null
+            )
+        }
+    }
+
+    private fun pause() {
+        playerController.pause()
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                playState = PlayState.pause
+            )
+        }
+    }
+
+    private fun stop() {
+        playerController.stop()
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                playState = PlayState.stop
+            )
+        }
+    }
+
+    private fun seekTo(position: Long) {
         playerController.seekTo(position)
-
     }
 
+    private fun playSelectedSong(uri: String) {
+        playerController.playSelectedSong(uri)
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                playState = PlayState.playing,
+                selectedSongUri = uri,
+                playbackError = null
+            )
+        }
+    }
+
+    private fun playLocal() {
+        playerController.playRaw(R.raw.vinak)
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                playState = PlayState.playing,
+                playbackError = null
+            )
+        }
+    }
 
     override fun onCleared() {
         playerController.release()
         super.onCleared()
     }
 
-    fun playLocal() {
-        viewModelScope.launch {
-            playerController.playRaw(R.raw.vinak)
-            _uiState.update { it.copy(playState = PlayState.playing) }
-        }
-
-
+    private companion object {
+        const val TAG = "MEDIA3"
     }
-
 }
