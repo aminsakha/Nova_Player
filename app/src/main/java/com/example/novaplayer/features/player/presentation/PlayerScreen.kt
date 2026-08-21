@@ -120,7 +120,7 @@ private fun PlayerScreenContent(
         )
 
         Spacer(
-            modifier = Modifier.height(24.dp)
+            modifier = Modifier.weight(1f)
         )
 
         CurrentSongInformation(
@@ -132,9 +132,7 @@ private fun PlayerScreenContent(
             }
         )
 
-        Spacer(
-            modifier = Modifier.height(24.dp)
-        )
+
 
         PlayerControls(
             isPlaying =

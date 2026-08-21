@@ -24,6 +24,7 @@ import kotlinx.coroutines.sync.withLock
 class PlayerController @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+
     private var controller: MediaController? = null
 
     private val connectionMutex = Mutex()
@@ -54,6 +55,7 @@ class PlayerController @Inject constructor(
 
     suspend fun connect() {
         connectionMutex.withLock {
+
             if (controller != null) {
                 return@withLock
             }
@@ -70,92 +72,213 @@ class PlayerController @Inject constructor(
                 MediaController.Builder(
                     context,
                     sessionToken
-                ).buildAsync().await()
+                )
+                    .buildAsync()
+                    .await()
 
-            newController.addListener(playerListener)
+            newController.addListener(
+                playerListener
+            )
+
             controller = newController
 
-            Log.d(TAG, "Controller connected")
+            Log.d(
+                TAG,
+                "Controller connected"
+            )
         }
+    }
+
+    fun isConnected(): Boolean {
+        return controller != null
     }
 
     fun play() {
-        controller?.apply {
-            if (
-                playbackState == Player.STATE_IDLE &&
-                currentMediaItem != null
-            ) {
-                prepare()
+
+        val mediaController =
+            controller ?: run {
+                reportPlaybackError(
+                    PlaybackError.PlayerNotConnected
+                )
+                return
             }
 
-            play()
-        }
-
-        Log.d(TAG, "Playing")
-    }
-
-    fun pause() {
-        controller?.pause()
-    }
-
-    fun stop() {
-        controller?.stop()
-
-        Log.d(TAG, "Stopped")
-    }
-
-    fun seekTo(position: Long) {
-        controller?.seekTo(position)
-    }
-
-    fun isPlaying(): Boolean {
-        return controller?.isPlaying ?: false
-    }
-
-    fun playSelectedSong(uri: String) {
-        if (uri.isBlank()) {
-            reportPlaybackError(
-                playbackError =
-                    PlaybackError.EmptySongUri
-            )
-            return
-        }
-
-        val mediaController = controller
-
-        if (mediaController == null) {
-            reportPlaybackError(
-                playbackError =
-                    PlaybackError.PlayerNotConnected
-            )
-            return
-        }
-
         try {
-            val mediaItem = MediaItem.fromUri(uri)
 
-            mediaController.setMediaItem(mediaItem)
-            mediaController.prepare()
+            if (
+                mediaController.playbackState ==
+                Player.STATE_IDLE &&
+                mediaController.currentMediaItem != null
+            ) {
+                mediaController.prepare()
+            }
+
             mediaController.play()
-        } catch (error: IllegalArgumentException) {
-            reportPlaybackError(
-                playbackError =
-                    PlaybackError.InvalidSongUri,
-                cause = error
+
+            Log.d(
+                TAG,
+                "Playing"
             )
-        } catch (error: SecurityException) {
-            reportPlaybackError(
-                playbackError =
-                    PlaybackError.PermissionDenied,
-                cause = error
-            )
+
         } catch (error: IllegalStateException) {
+
             reportPlaybackError(
                 playbackError =
                     PlaybackError.InvalidPlayerState,
                 cause = error
             )
+        }
+    }
+
+    fun pause() {
+
+        val mediaController =
+            controller ?: run {
+                reportPlaybackError(
+                    PlaybackError.PlayerNotConnected
+                )
+                return
+            }
+
+        mediaController.pause()
+
+        Log.d(
+            TAG,
+            "Paused"
+        )
+    }
+
+    fun stop() {
+
+        val mediaController =
+            controller ?: run {
+                reportPlaybackError(
+                    PlaybackError.PlayerNotConnected
+                )
+                return
+            }
+
+        mediaController.stop()
+
+        Log.d(
+            TAG,
+            "Stopped"
+        )
+    }
+
+    fun seekTo(
+        position: Long
+    ) {
+
+        val mediaController =
+            controller ?: run {
+                reportPlaybackError(
+                    PlaybackError.PlayerNotConnected
+                )
+                return
+            }
+
+        val safePosition =
+            position.coerceAtLeast(0L)
+
+        mediaController.seekTo(
+            safePosition
+        )
+    }
+
+    fun isPlaying(): Boolean {
+        return controller?.isPlaying == true
+    }
+
+    fun getCurrentPosition(): Long {
+        return controller?.currentPosition ?: 0L
+    }
+
+    fun getDuration(): Long {
+        val duration =
+            controller?.duration ?: 0L
+
+        return if (duration > 0L) {
+            duration
+        } else {
+            0L
+        }
+    }
+
+    fun hasCurrentMediaItem(): Boolean {
+        return controller?.currentMediaItem != null
+    }
+
+    fun getCurrentMediaUri(): String? {
+        return controller
+            ?.currentMediaItem
+            ?.localConfiguration
+            ?.uri
+            ?.toString()
+    }
+
+    fun playSelectedSong(
+        uri: String
+    ) {
+
+        if (uri.isBlank()) {
+            reportPlaybackError(
+                PlaybackError.EmptySongUri
+            )
+            return
+        }
+
+        val mediaController =
+            controller ?: run {
+                reportPlaybackError(
+                    PlaybackError.PlayerNotConnected
+                )
+                return
+            }
+
+        try {
+
+            val mediaItem =
+                MediaItem.fromUri(uri)
+
+            mediaController.setMediaItem(
+                mediaItem
+            )
+
+            mediaController.prepare()
+            mediaController.play()
+
+            Log.d(
+                TAG,
+                "Selected song started: $uri"
+            )
+
+        } catch (error: IllegalArgumentException) {
+
+            reportPlaybackError(
+                playbackError =
+                    PlaybackError.InvalidSongUri,
+                cause = error
+            )
+
+        } catch (error: SecurityException) {
+
+            reportPlaybackError(
+                playbackError =
+                    PlaybackError.PermissionDenied,
+                cause = error
+            )
+
+        } catch (error: IllegalStateException) {
+
+            reportPlaybackError(
+                playbackError =
+                    PlaybackError.InvalidPlayerState,
+                cause = error
+            )
+
         } catch (error: RuntimeException) {
+
             Log.e(
                 TAG,
                 "Unexpected error while playing selected song",
@@ -166,48 +289,93 @@ class PlayerController @Inject constructor(
         }
     }
 
-    fun playRaw(res: Int) {
-        controller?.apply {
+    fun playRaw(
+        res: Int
+    ) {
+
+        val mediaController =
+            controller ?: run {
+                reportPlaybackError(
+                    PlaybackError.PlayerNotConnected
+                )
+                return
+            }
+
+        try {
+
             val uri =
                 "android.resource://${context.packageName}/$res"
                     .toUri()
 
-            val mediaItem = MediaItem.fromUri(uri)
+            val mediaItem =
+                MediaItem.fromUri(uri)
 
-            setMediaItem(mediaItem)
-            prepare()
-            play()
+            mediaController.setMediaItem(
+                mediaItem
+            )
+
+            mediaController.prepare()
+            mediaController.play()
+
+        } catch (error: Exception) {
+
+            Log.e(
+                TAG,
+                "Unable to play raw resource",
+                error
+            )
+
+            reportPlaybackError(
+                playbackError =
+                    PlaybackError.InvalidPlayerState,
+                cause = error
+            )
         }
-    }
-
-    fun release() {
-        val currentController = controller ?: return
-
-        currentController.removeListener(playerListener)
-        currentController.release()
-        controller = null
-
-        Log.d(TAG, "Controller released")
     }
 
     private fun reportPlaybackError(
         playbackError: PlaybackError,
         cause: Throwable? = null
     ) {
-        mutablePlaybackErrors.tryEmit(playbackError)
+
+        mutablePlaybackErrors.tryEmit(
+            playbackError
+        )
 
         if (cause != null) {
+
             Log.e(
                 TAG,
                 playbackError.toString(),
                 cause
             )
+
         } else {
+
             Log.e(
                 TAG,
                 playbackError.toString()
             )
         }
+    }
+
+    fun release() {
+
+        val currentController =
+            controller ?: return
+
+        currentController.removeListener(
+            playerListener
+        )
+
+        currentController.release()
+
+        controller = null
+
+        Log.d(
+            TAG,
+            "Controller released"
+        )
     }
 
     private companion object {

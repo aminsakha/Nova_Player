@@ -6,13 +6,13 @@ import com.example.novaplayer.core.media.controller.PlayerController
 import com.example.novaplayer.features.player.domain.CurrentSong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
@@ -39,6 +39,7 @@ class PlayerViewModel @Inject constructor(
         action: PlayerContract.UiAction
     ) {
         when (action) {
+
             is PlayerContract.UiAction.SelectSong -> {
                 selectSong(action.song)
             }
@@ -71,16 +72,22 @@ class PlayerViewModel @Inject constructor(
 
     private fun connectToPlayer() {
         viewModelScope.launch {
+
             runCatching {
                 playerController.connect()
             }.onSuccess {
+
                 isPlayerConnected = true
 
                 pendingSong?.let { song ->
                     pendingSong = null
                     startSelectedSong(song)
                 }
+
             }.onFailure { error ->
+
+                isPlayerConnected = false
+
                 _uiState.update { currentState ->
                     currentState.copy(
                         errorMessage =
@@ -94,18 +101,15 @@ class PlayerViewModel @Inject constructor(
 
     private fun observePlaybackErrors() {
         viewModelScope.launch {
-            playerController.playbackError.collect {
-                    errorMessage ->
+
+            playerController.playbackErrors.collect { playbackError ->
 
                 _uiState.update { currentState ->
                     currentState.copy(
                         playbackStatus =
-                            if (errorMessage != null) {
-                                PlaybackStatus.PAUSED
-                            } else {
-                                currentState.playbackStatus
-                            },
-                        errorMessage = errorMessage
+                            PlaybackStatus.PAUSED,
+                        errorMessage =
+                            playbackError.toString()
                     )
                 }
             }
@@ -113,7 +117,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun selectSong(
-        song: CurrentSong,
+        song: CurrentSong
     ) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -136,6 +140,11 @@ class PlayerViewModel @Inject constructor(
     private fun startSelectedSong(
         song: CurrentSong
     ) {
+        if (!isPlayerConnected) {
+            pendingSong = song
+            return
+        }
+
         playerController.playSelectedSong(
             uri = song.uri
         )
@@ -152,48 +161,63 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun playPause() {
-        val currentState = _uiState.value
+
+        val currentState =
+            _uiState.value
 
         if (currentState.currentSong == null) {
+
             _uiState.update {
                 it.copy(
                     errorMessage = "No song selected"
                 )
             }
+
             return
         }
 
-        if (
-            currentState.playbackStatus ==
-            PlaybackStatus.PLAYING
-        ) {
-            playerController.pause()
+        when (currentState.playbackStatus) {
 
-            _uiState.update {
-                it.copy(
-                    playbackStatus =
-                        PlaybackStatus.PAUSED
-                )
+            PlaybackStatus.PLAYING -> {
+
+                playerController.pause()
+
+                _uiState.update {
+                    it.copy(
+                        playbackStatus =
+                            PlaybackStatus.PAUSED
+                    )
+                }
             }
-        } else {
-            playerController.play()
 
-            _uiState.update {
-                it.copy(
-                    playbackStatus =
-                        PlaybackStatus.PLAYING
-                )
+            PlaybackStatus.PAUSED,
+            PlaybackStatus.STOPPED -> {
+
+                playerController.play()
+
+                _uiState.update {
+                    it.copy(
+                        playbackStatus =
+                            PlaybackStatus.PLAYING
+                    )
+                }
             }
         }
     }
 
     private fun stop() {
+
+        if (!isPlayerConnected) {
+            return
+        }
+
         playerController.stop()
 
         _uiState.update {
             it.copy(
                 playbackStatus =
-                    PlaybackStatus.STOPPED
+                    PlaybackStatus.STOPPED,
+                currentPositionMs = 0L
             )
         }
     }
@@ -201,7 +225,22 @@ class PlayerViewModel @Inject constructor(
     private fun seekTo(
         positionMs: Long
     ) {
-        val safePosition = positionMs.coerceAtLeast(0L)
+        if (!isPlayerConnected) {
+            return
+        }
+
+        val duration =
+            playerController.getDuration()
+
+        val safePosition =
+            if (duration > 0L) {
+                positionMs.coerceIn(
+                    minimumValue = 0L,
+                    maximumValue = duration
+                )
+            } else {
+                positionMs.coerceAtLeast(0L)
+            }
 
         playerController.seekTo(
             position = safePosition
@@ -215,8 +254,6 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun clearError() {
-        playerController.clearPlaybackError()
-
         _uiState.update {
             it.copy(
                 errorMessage = null
@@ -235,8 +272,11 @@ class PlayerViewModel @Inject constructor(
 
     private fun observePlaybackProgress() {
         viewModelScope.launch {
+
             while (isActive) {
+
                 if (isPlayerConnected) {
+
                     val currentPosition =
                         playerController
                             .getCurrentPosition()
@@ -276,4 +316,3 @@ class PlayerViewModel @Inject constructor(
         super.onCleared()
     }
 }
-
