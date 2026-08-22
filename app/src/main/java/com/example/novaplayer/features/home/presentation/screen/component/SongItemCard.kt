@@ -55,13 +55,13 @@ fun SongItemCard(track: Track) {
             ) {
                 Text(
                     track.title,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     track.artist, color = MaterialTheme.colorScheme.onSurface.copy(
                         alpha = 0.5f
-                    ), style = MaterialTheme.typography.titleMedium
+                    ), style = MaterialTheme.typography.titleSmall
                 )
             }
             Spacer(Modifier.weight(1f))

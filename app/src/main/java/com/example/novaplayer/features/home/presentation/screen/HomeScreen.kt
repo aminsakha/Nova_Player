@@ -1,5 +1,6 @@
 package com.example.novaplayer.features.home.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.example.novaplayer.core.ui.theme.Space2
 import com.example.novaplayer.features.home.data.HomeTabs
 import com.example.novaplayer.features.home.presentation.screen.component.HomeTabBar
@@ -30,11 +32,17 @@ fun HomeSc() {
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             Toolbar()
         },
         bottomBar = {
-            MiniPlayerComp()
+            Box(
+                modifier = Modifier
+                    .background(Color.Transparent)
+            ) {
+                MiniPlayerComp()
+            }
         }
     ) { innerPadding ->
 
@@ -54,13 +62,15 @@ fun HomeSc() {
                     selectedTab = selectedTab,
                     onTabSelected = { selectedTab = it }
                 )
-
-                when (selectedTab) {
-                    HomeTabs.PLAYLISTS -> PlayListTab()
-                    HomeTabs.TRACKS -> TracksTab()
-                    HomeTabs.FAVORITES -> FavoritesTab()
-                    HomeTabs.RECENT -> RecentTab()
+                Box(Modifier.fillMaxSize()){
+                    when (selectedTab) {
+                        HomeTabs.PLAYLISTS -> PlayListTab()
+                        HomeTabs.TRACKS -> TracksTab()
+                        HomeTabs.FAVORITES -> FavoritesTab()
+                        HomeTabs.RECENT -> RecentTab()
+                    }
                 }
+
             }
         }
     }
