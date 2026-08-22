@@ -23,14 +23,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.novaplayer.R
 import com.example.novaplayer.core.ui.theme.AvatarLarge
 import com.example.novaplayer.core.ui.theme.Space1
 import com.example.novaplayer.core.ui.theme.Space2
 import com.example.novaplayer.core.ui.theme.Space4
-import com.example.novaplayer.features.home.domain.Track
+import com.example.novaplayer.features.home.domain.model.Track
 
 
 @Composable

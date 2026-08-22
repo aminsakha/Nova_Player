@@ -1,4 +1,4 @@
-package com.example.novaplayer.features.home.data
+package com.example.novaplayer.features.home.domain.model
 
 import androidx.annotation.StringRes
 import com.example.novaplayer.R

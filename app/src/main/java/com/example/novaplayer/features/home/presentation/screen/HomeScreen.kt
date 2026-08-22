@@ -14,7 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.novaplayer.core.ui.theme.Space2
-import com.example.novaplayer.features.home.data.HomeTabs
+import com.example.novaplayer.features.home.domain.model.HomeTabs
 import com.example.novaplayer.features.home.presentation.screen.component.HomeTabBar
 import com.example.novaplayer.features.home.presentation.screen.component.MiniPlayerComp
 import com.example.novaplayer.features.home.presentation.screen.component.Toolbar

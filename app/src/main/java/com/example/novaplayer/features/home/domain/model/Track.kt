@@ -1,4 +1,4 @@
-package com.example.novaplayer.features.home.domain
+package com.example.novaplayer.features.home.domain.model
 
 data class Track(
     val id: Long,
