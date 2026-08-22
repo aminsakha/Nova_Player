@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.novaplayer.core.media.presentation.screen.TestPlayer
+import com.example.novaplayer.features.home.presentation.screen.HomeSc
 
 @Composable
 fun NovaPlayerNavigation() {
@@ -15,7 +16,7 @@ fun NovaPlayerNavigation() {
         startDestination = HomeScreenRoute
     ) {
         composable<HomeScreenRoute> {
-            TestPlayer()
+            HomeSc()
         }
 
     }
