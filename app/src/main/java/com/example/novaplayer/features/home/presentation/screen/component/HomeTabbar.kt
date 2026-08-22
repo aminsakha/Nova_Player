@@ -1,4 +1,4 @@
-package com.example.novaplayer.features.home.presentation.component
+package com.example.novaplayer.features.home.presentation.screen.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +29,7 @@ fun HomeTabBar(
     val tabs = HomeTabs.entries
 
     TabRow(
+        containerColor = Color.Transparent,
         selectedTabIndex = selectedTab.ordinal,
         divider = {},
         indicator = { tabPositions ->
@@ -51,6 +52,7 @@ fun HomeTabBar(
 
             Box(
                 modifier = Modifier
+
                     .clickable {
                         onTabSelected(tab)
                     }
@@ -64,7 +66,9 @@ fun HomeTabBar(
                     color = if (isSelected) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        Color.Black.copy(alpha = 0.5f)
+                        MaterialTheme.colorScheme.onSurface.copy(
+                            alpha = 0.5f
+                        )
                     },
                     modifier = Modifier
                         .padding(8.dp)

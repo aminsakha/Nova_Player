@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.novaplayer.R
+import com.example.novaplayer.core.navigation.NovaPlayerNavigation
 import com.example.novaplayer.core.ui.theme.NovaPlayerTheme
 import com.example.novaplayer.features.player.domain.CurrentSong
 import com.example.novaplayer.features.player.presentation.PlayerScreen
@@ -68,28 +69,7 @@ fun MusicPlayerApp() {
                     .padding(innerPadding)
             ) {
 
-                PlayerScreen(
-                    selectedSong = selectedSong
-                )
-
-                IconButton(
-                    onClick = {
-                        isSettingsOpen = true
-                    },
-                    modifier = Modifier.align(Alignment.TopEnd)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Settings"
-                    )
-                }
-
-                SettingsPanel(
-                    visible = isSettingsOpen,
-                    onClose = {
-                        isSettingsOpen = false
-                    }
-                )
+                NovaPlayerNavigation()
             }
         }
     }
