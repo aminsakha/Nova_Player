@@ -1,57 +1,77 @@
 package com.example.novaplayer.features.home.presentation.component
 
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Tab
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.example.novaplayer.R
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.example.novaplayer.features.home.data.HomeTabs
 
 @Composable
-fun HomeTabBar(selectTab: HomeTab, onTabSelected: (HomeTab) -> Unit) {
-    PrimaryTabRow(
-        selectedTabIndex = selectTab.ordinal
+fun HomeTabBar(
+    selectedTab: HomeTabs,
+    onTabSelected: (HomeTabs) -> Unit
+) {
+    val tabs = HomeTabs.entries
+
+    TabRow(
+        selectedTabIndex = selectedTab.ordinal,
+        divider = {},
+        indicator = { tabPositions ->
+
+            Box(
+                modifier = Modifier
+                    .tabIndicatorOffset(tabPositions[selectedTab.ordinal])
+                    .padding(horizontal = 16.dp)
+                    .height(2.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(50)
+                    )
+            )
+        }
     ) {
-        Tab(
-            selected = selectTab == HomeTab.PLAYLISTS,
-            onClick = { onTabSelected(HomeTab.PLAYLISTS) },
-            text = {
-                Text(stringResource(R.string.home_tab_playlists))
-            }
-        )
+        tabs.forEach { tab ->
 
-        Tab(
-            selected = selectTab == HomeTab.TRACKS,
-            onClick = { onTabSelected(HomeTab.TRACKS) },
-            text = {
-                Text(stringResource(R.string.home_tab_tracks))
-            }
-        )
+            val isSelected = selectedTab == tab
 
-        Tab(
-            selected = selectTab == HomeTab.FAVORITES,
-            onClick = { onTabSelected(HomeTab.FAVORITES) },
-            text = {
-                Text(stringResource(R.string.home_tab_favorites))
-            }
-        )
+            Box(
+                modifier = Modifier
+                    .clickable {
+                        onTabSelected(tab)
+                    }
+                    .padding(8.dp)
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = stringResource(tab.titleRes),
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        Color.Black.copy(alpha = 0.5f)
+                    },
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth()
 
-        Tab(
-            selected = selectTab == HomeTab.RECENT,
-            onClick = { onTabSelected(HomeTab.RECENT) },
-            text = {
-                Text(stringResource(R.string.home_tab_recent))
+                )
             }
-        )
+        }
     }
-
-}
-
-enum class HomeTab {
-    PLAYLISTS,
-    TRACKS,
-    FAVORITES,
-    RECENT
 }

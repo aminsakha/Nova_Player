@@ -15,36 +15,46 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.novaplayer.features.home.presentation.component.HomeTab
+import com.example.novaplayer.features.home.data.HomeTabs
 import com.example.novaplayer.features.home.presentation.component.HomeTabBar
-import com.example.novaplayer.features.home.presentation.component.HomeTabbar
+import com.example.novaplayer.features.home.presentation.tabs.FavoritesTab
+import com.example.novaplayer.features.home.presentation.tabs.PlayListTab
+import com.example.novaplayer.features.home.presentation.tabs.RecentTab
+import com.example.novaplayer.features.home.presentation.tabs.TracksTab
 
 @Preview(showSystemUi = true)
 @Composable
 fun HomeSc() {
     var selectedTab by rememberSaveable {
-        mutableStateOf(HomeTab.TRACKS)
+        mutableStateOf(HomeTabs.TRACKS)
     }
 
-    Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
         Column(Modifier.padding(8.dp)) {
             Toolbar()
             HomeTabBar(
                 selectedTab = selectedTab,
                 onTabSelected = { selectedTab = it }
-            )
+
+                )
 
             when (selectedTab) {
-                HomeTab.PLAYLISTS -> PlaylistsTab()
-                HomeTab.TRACKS -> TracksTab()
-                HomeTab.FAVORITES -> FavoritesTab()
-                HomeTab.RECENT -> RecentTab()
+                HomeTabs.PLAYLISTS -> PlayListTab()
+                HomeTabs.TRACKS -> TracksTab()
+                HomeTabs.FAVORITES -> FavoritesTab()
+                HomeTabs.RECENT -> RecentTab()
             }
         }
     }
@@ -61,15 +71,15 @@ fun Toolbar() {
         )
         Spacer(Modifier.weight(1f))
         Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Icon(
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(28.dp),
                 imageVector = Icons.Default.Search, contentDescription = ""
             )
 
             Icon(
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(28.dp),
 
                 imageVector = Icons.Default.Menu, contentDescription = ""
             )
