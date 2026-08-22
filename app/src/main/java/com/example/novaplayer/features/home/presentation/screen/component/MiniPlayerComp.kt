@@ -2,6 +2,7 @@ package com.example.novaplayer.features.home.presentation.screen.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +34,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.novaplayer.R
+import com.example.novaplayer.core.ui.theme.AvatarLarge
 import com.example.novaplayer.core.ui.theme.IconLarge
+import com.example.novaplayer.core.ui.theme.Space2
 import com.example.novaplayer.core.ui.theme.Space4
 
 @Composable
@@ -68,11 +71,12 @@ fun MiniPlayerComp(
         ) {
 
             Image(
-                painter = painterResource(R.drawable.ic_launcher_background),
-                contentDescription = null,
                 modifier = Modifier
-                    .size(60.dp)
-                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.onSurface, shape = CircleShape)
+                    .size(AvatarLarge)
+                    .clip(CircleShape),
+                painter = painterResource(R.drawable.ic_album_placeholder),
+                contentDescription = ""
             )
 
             Column(
