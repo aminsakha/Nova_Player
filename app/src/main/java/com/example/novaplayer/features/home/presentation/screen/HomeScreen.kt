@@ -15,18 +15,37 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.novaplayer.features.home.presentation.component.HomeTab
+import com.example.novaplayer.features.home.presentation.component.HomeTabBar
+import com.example.novaplayer.features.home.presentation.component.HomeTabbar
 
 @Preview(showSystemUi = true)
 @Composable
 fun HomeSc() {
+    var selectedTab by rememberSaveable {
+        mutableStateOf(HomeTab.TRACKS)
+    }
+
     Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Column(Modifier.padding(8.dp)) {
             Toolbar()
-            HomeTabbar()
+            HomeTabBar(
+                selectedTab = selectedTab,
+                onTabSelected = { selectedTab = it }
+            )
+
+            when (selectedTab) {
+                HomeTab.PLAYLISTS -> PlaylistsTab()
+                HomeTab.TRACKS -> TracksTab()
+                HomeTab.FAVORITES -> FavoritesTab()
+                HomeTab.RECENT -> RecentTab()
+            }
         }
     }
 }

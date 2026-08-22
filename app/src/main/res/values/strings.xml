@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Nova Player</string>
+    <string name="home_tab_playlists">Playlists</string>
+    <string name="home_tab_tracks">Tracks</string>
+    <string name="home_tab_favorites">Favorites</string>
+    <string name="home_tab_recent">Recent</string>
 </resources>
