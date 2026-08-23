@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.novaplayer.features.home.domain.model.Track
-import com.example.novaplayer.features.home.domain.model.fakeTracks
+
 import com.example.novaplayer.features.home.presentation.screen.component.SongItemCard
 
 @Composable

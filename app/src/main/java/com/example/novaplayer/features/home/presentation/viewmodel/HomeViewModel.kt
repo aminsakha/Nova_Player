@@ -1,5 +1,6 @@
 package com.example.novaplayer.features.home.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.novaplayer.features.home.domain.usecase.GetTracksUseCase
@@ -53,6 +54,8 @@ class HomeViewModel @Inject constructor(
                         loadingState = LoadingState.ERROR
                     )
                 }
+                Log.d("ERROR",e.message.toString())
+
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.example.novaplayer.features.home.domain.model
 
+import android.net.Uri
+
 data class Track(
     val id: Long,
     val title: String,
@@ -7,9 +9,10 @@ data class Track(
     val album: String?,
     val duration: Long,
     val uri: String,
-    val albumArtUri: String?
+    val albumArtUri: Uri?
 
 )
+/*
 val fakeTracks = listOf(
     Track(
         id = 1,
@@ -191,4 +194,4 @@ val fakeTracks = listOf(
         uri = "fake://track/20",
         albumArtUri = "fake://album/13"
     )
-)
+)*/

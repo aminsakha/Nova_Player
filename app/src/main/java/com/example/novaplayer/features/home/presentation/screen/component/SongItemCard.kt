@@ -23,7 +23,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.novaplayer.R
 import com.example.novaplayer.core.ui.theme.AvatarLarge
 import com.example.novaplayer.core.ui.theme.Space1
@@ -39,34 +41,50 @@ fun SongItemCard(track: Track) {
             .fillMaxWidth()
             .padding(Space4)
     ) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Image(
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = track.albumArtUri,
+                contentDescription = track.title,
                 modifier = Modifier
-                    .border(1.dp, color = Color.Black, shape = RoundedCornerShape(Space2))
-                    .size(AvatarLarge)
-                    .clip(RoundedCornerShape(Space2)),
-                painter = painterResource(R.drawable.ic_album_placeholder),
-                contentDescription = ""
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                placeholder = painterResource(R.drawable.ic_album_placeholder),
+                error = painterResource(R.drawable.ic_album_placeholder)
             )
+
             Column(
-                Modifier.padding(start = Space4),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = Space4),
                 verticalArrangement = Arrangement.spacedBy(Space1)
             ) {
                 Text(
-                    track.title,
+                    text = track.title,
+                    modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
+
                 Text(
-                    track.artist, color = MaterialTheme.colorScheme.onSurface.copy(
+                    text = track.artist,
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.onSurface.copy(
                         alpha = 0.5f
-                    ), style = MaterialTheme.typography.titleSmall
+                    ),
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
-            Spacer(Modifier.weight(1f))
-            Box(modifier = Modifier.size(20.dp))
+
             Icon(
-                imageVector = Icons.Default.MoreVert, contentDescription = ""
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "More options"
             )
         }
     }

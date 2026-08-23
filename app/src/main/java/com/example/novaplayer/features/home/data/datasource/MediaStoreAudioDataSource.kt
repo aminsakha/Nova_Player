@@ -2,6 +2,7 @@ package com.example.novaplayer.features.home.data.datasource
 
 import android.content.ContentUris
 import android.content.Context
+import android.net.Uri
 import android.provider.MediaStore
 import com.example.novaplayer.features.home.data.model.TrackDto
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,6 +23,7 @@ class MediaStoreAudioDataSource @Inject constructor(
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.ALBUM_ID,
             MediaStore.Audio.Media.DURATION
         )
 
@@ -47,6 +49,9 @@ class MediaStoreAudioDataSource @Inject constructor(
             val albumColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)
 
+            val albumIdColumn =
+                cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
+
             val durationColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 
@@ -59,6 +64,13 @@ class MediaStoreAudioDataSource @Inject constructor(
                     id
                 )
 
+                val albumId = cursor.getLong(albumIdColumn)
+
+                val albumArtUri = ContentUris.withAppendedId(
+                    Uri.parse("content://media/external/audio/albumart"),
+                    albumId
+                )
+
                 tracks += TrackDto(
                     id = id,
                     title = cursor.getString(titleColumn),
@@ -66,7 +78,7 @@ class MediaStoreAudioDataSource @Inject constructor(
                     album = cursor.getString(albumColumn),
                     duration = cursor.getLong(durationColumn),
                     uri = uri.toString(),
-                    albumArtUri = null
+                    albumArtUri = albumArtUri
                 )
             }
         }
