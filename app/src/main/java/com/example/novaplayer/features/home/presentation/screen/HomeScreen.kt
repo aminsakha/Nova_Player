@@ -3,8 +3,13 @@ package com.example.novaplayer.features.home.presentation.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,14 +17,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.novaplayer.R
 import com.example.novaplayer.core.ui.theme.Space2
 import com.example.novaplayer.features.home.domain.model.HomeTabs
-import com.example.novaplayer.features.home.presentation.contract.LoadingState
 import com.example.novaplayer.features.home.presentation.contract.HomeContract
+import com.example.novaplayer.features.home.presentation.contract.LoadingState
 import com.example.novaplayer.features.home.presentation.permission.AudioPermissionHandler
 import com.example.novaplayer.features.home.presentation.screen.component.HomeTabBar
 import com.example.novaplayer.features.home.presentation.screen.component.MiniPlayerComp
@@ -84,7 +93,27 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel()) {
                             when (uiState.loadingState) {
                                 LoadingState.IDLE,
                                 LoadingState.LOADING -> {
-                                    Text("Loading...")
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            Text(
+                                                text = stringResource(R.string.loading),
+                                                color = MaterialTheme.colorScheme.primary,
+                                                style = MaterialTheme.typography.bodyMedium
+                                            )
+
+                                            Spacer(modifier = Modifier.height(8.dp))
+
+                                            LinearProgressIndicator(
+                                                modifier = Modifier.width(120.dp),
+                                                color = MaterialTheme.colorScheme.primary
+                                            )
+                                        }
+                                    }
                                 }
 
                                 LoadingState.SUCCESS -> {
@@ -92,7 +121,16 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel()) {
                                 }
 
                                 LoadingState.ERROR -> {
-                                    Text("Error loading tracks")
+                                    Box(
+                                        Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = stringResource(R.string.error_loading_tracks),
+                                            color = MaterialTheme.colorScheme.error,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
                                 }
                             }
                         }
