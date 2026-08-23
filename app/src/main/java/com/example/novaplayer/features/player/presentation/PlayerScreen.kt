@@ -112,12 +112,13 @@ private fun PlayerScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AlbumArtwork(
-            artworkData = currentSong.artworkData,
+            albumArtUri = currentSong.albumArtUri,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp)
                 .aspectRatio(1f)
         )
+
 
         Spacer(
             modifier = Modifier.weight(1f)

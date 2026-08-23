@@ -17,7 +17,8 @@ import com.example.novaplayer.features.home.presentation.screen.component.SongIt
 @Composable
 fun TracksTab(
     tracks: List<Track>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onTrackClicked: (Track) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -32,7 +33,9 @@ fun TracksTab(
             items = tracks,
             key = { track -> track.id }
         ) { track ->
-            SongItemCard(track)
+            SongItemCard(track){
+                onTrackClicked(track)
+            }
         }
     }
 }

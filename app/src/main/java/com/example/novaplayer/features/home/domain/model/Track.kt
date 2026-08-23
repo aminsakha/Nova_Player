@@ -1,15 +1,17 @@
 package com.example.novaplayer.features.home.domain.model
 
 import android.net.Uri
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Track(
-    val id: Long,
-    val title: String,
-    val artist: String,
-    val album: String?,
-    val duration: Long,
-    val uri: String,
-    val albumArtUri: Uri?
+    val id: Long=0,
+    val title: String="",
+    val artist: String="",
+    val album: String?="",
+    val duration: Long=0L,
+    val uri: String="",
+    val albumArtUri: String?
 
 )
 /*

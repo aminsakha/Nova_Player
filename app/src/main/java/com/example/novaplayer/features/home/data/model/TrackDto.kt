@@ -9,5 +9,5 @@ data class TrackDto(
     val album: String?,
     val duration: Long,
     val uri: String,
-    val albumArtUri: Uri?
+    val albumArtUri: String
 )

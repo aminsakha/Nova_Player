@@ -3,6 +3,7 @@ package com.example.novaplayer.features.home.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.novaplayer.features.home.domain.model.Track
 import com.example.novaplayer.features.home.domain.usecase.GetTracksUseCase
 import com.example.novaplayer.features.home.presentation.contract.LoadingState
 import com.example.novaplayer.features.home.presentation.contract.HomeContract
@@ -17,7 +18,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getTracksUseCase: GetTracksUseCase
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(
         HomeContract.UiState()
     )

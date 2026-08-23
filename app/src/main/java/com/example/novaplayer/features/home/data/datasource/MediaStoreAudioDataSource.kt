@@ -69,7 +69,7 @@ class MediaStoreAudioDataSource @Inject constructor(
                 val albumArtUri = ContentUris.withAppendedId(
                     Uri.parse("content://media/external/audio/albumart"),
                     albumId
-                )
+                ).toString()
 
                 tracks += TrackDto(
                     id = id,

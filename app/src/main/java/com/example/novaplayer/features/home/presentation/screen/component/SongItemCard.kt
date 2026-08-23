@@ -2,6 +2,7 @@ package com.example.novaplayer.features.home.presentation.screen.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,10 +36,11 @@ import com.example.novaplayer.features.home.domain.model.Track
 
 
 @Composable
-fun SongItemCard(track: Track) {
+fun SongItemCard(track: Track, onClick: () -> Unit) {
     Box(
         Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(Space4)
     ) {
         Row(

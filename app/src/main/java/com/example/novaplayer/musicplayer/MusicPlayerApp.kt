@@ -53,7 +53,7 @@ fun MusicPlayerApp() {
                         "${R.raw.vinak}",
             title = "Vinak",
             artist = "Karam Hite",
-            artworkData = null
+            albumArtUri = ""
         )
     }
     NovaPlayerTheme(

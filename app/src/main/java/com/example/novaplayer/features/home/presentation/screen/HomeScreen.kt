@@ -24,9 +24,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
 import com.example.novaplayer.R
 import com.example.novaplayer.core.ui.theme.Space2
 import com.example.novaplayer.features.home.domain.model.HomeTabs
+import com.example.novaplayer.features.home.domain.model.Track
 import com.example.novaplayer.features.home.presentation.contract.HomeContract
 import com.example.novaplayer.features.home.presentation.contract.LoadingState
 import com.example.novaplayer.features.home.presentation.permission.AudioPermissionHandler
@@ -41,11 +43,12 @@ import com.example.novaplayer.features.home.presentation.viewmodel.HomeViewModel
 
 
 @Composable
-fun HomeSc(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable {
         mutableStateOf(HomeTabs.TRACKS)
     }
+    val navController = rememberNavController()
     AudioPermissionHandler(
         onPermissionGranted = {
             viewModel.onAction(
@@ -117,7 +120,9 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel()) {
                                 }
 
                                 LoadingState.SUCCESS -> {
-                                    TracksTab(tracks = uiState.tracks)
+                                    TracksTab(tracks = uiState.tracks){
+                                        onTrackClick(it)
+                                    }
                                 }
 
                                 LoadingState.ERROR -> {
