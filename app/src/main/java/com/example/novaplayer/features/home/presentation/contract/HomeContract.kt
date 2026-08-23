@@ -2,7 +2,7 @@ package com.example.novaplayer.features.home.presentation.contract
 
 import com.example.novaplayer.features.home.domain.model.Track
 
-object TrackContract {
+object HomeContract {
 
     data class UiState(
         val tracks: List<Track> = emptyList(),

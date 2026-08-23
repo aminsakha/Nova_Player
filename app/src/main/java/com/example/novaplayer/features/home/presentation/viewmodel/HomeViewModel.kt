@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.novaplayer.features.home.domain.usecase.GetTracksUseCase
 import com.example.novaplayer.features.home.presentation.contract.LoadingState
-import com.example.novaplayer.features.home.presentation.contract.TrackContract
+import com.example.novaplayer.features.home.presentation.contract.HomeContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,14 +18,14 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        TrackContract.UiState()
+        HomeContract.UiState()
     )
 
     val uiState = _uiState.asStateFlow()
 
-    fun onAction(action: TrackContract.UiAction) {
+    fun onAction(action: HomeContract.UiAction) {
         when (action) {
-            TrackContract.UiAction.GetTracks -> getTracks()
+            HomeContract.UiAction.GetTracks -> getTracks()
         }
     }
 
