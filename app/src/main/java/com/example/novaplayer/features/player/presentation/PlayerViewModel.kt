@@ -3,9 +3,10 @@ package com.example.novaplayer.features.player.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.novaplayer.core.media.controller.PlayerController
+import com.example.novaplayer.features.home.domain.model.Track
+import com.example.novaplayer.features.home.domain.usecase.GetTracksUseCase
 import com.example.novaplayer.features.player.domain.CurrentSong
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,11 +14,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val playerController: PlayerController
+    private val playerController: PlayerController,
+    private val trackUseCase: GetTracksUseCase
 ) : ViewModel() {
+
+    private val _track = MutableStateFlow<Track?>(null)
+    val track = _track.asStateFlow()
 
     private val _uiState =
         MutableStateFlow(PlayerContract.UiState())
@@ -39,6 +45,8 @@ class PlayerViewModel @Inject constructor(
         action: PlayerContract.UiAction
     ) {
         when (action) {
+
+            is PlayerContract.UiAction.GetTrack -> loadTrack(action.uri)
 
             is PlayerContract.UiAction.SelectSong -> {
                 selectSong(action.song)
@@ -67,6 +75,12 @@ class PlayerViewModel @Inject constructor(
             PlayerContract.UiAction.ClearError -> {
                 clearError()
             }
+        }
+    }
+
+    private fun loadTrack(uri: String) {
+        viewModelScope.launch {
+            _track.value = trackUseCase.getTrack(uri)
         }
     }
 

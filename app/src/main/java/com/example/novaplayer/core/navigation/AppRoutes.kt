@@ -9,5 +9,5 @@ object  HomeScreenRoute
 
 @Serializable
 data class PlayerScreenRoute(
-    val track: Track
+    val trackId: String
 )

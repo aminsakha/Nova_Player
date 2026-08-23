@@ -13,4 +13,18 @@ fun TrackDto.toDomain(): Track {
         uri = uri,
         albumArtUri = albumArtUri
     )
+
 }
+fun Track.toDto(): TrackDto {
+    return TrackDto(
+        id = id,
+        title = title,
+        artist = artist,
+        album = album,
+        duration = duration,
+        uri = uri,
+        albumArtUri = albumArtUri
+    )
+
+}
+

@@ -5,9 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.novaplayer.core.media.presentation.screen.TestPlayer
 import com.example.novaplayer.features.home.presentation.screen.HomeSc
-import com.example.novaplayer.features.player.domain.mapper.toCurrentSong
 import com.example.novaplayer.features.player.presentation.PlayerScreen
 
 @Composable
@@ -19,20 +17,23 @@ fun NovaPlayerNavigation() {
         startDestination = HomeScreenRoute
     ) {
         composable<HomeScreenRoute> {
-            HomeSc(){
-                navController.navigate(PlayerScreenRoute(track = it))
+            HomeSc { track ->
+
+                navController.navigate(
+                    PlayerScreenRoute(
+                        trackId = track.uri
+                    )
+                )
             }
         }
         composable<PlayerScreenRoute> { backStackEntry ->
+
             val route = backStackEntry.toRoute<PlayerScreenRoute>()
 
-            val currentSong = route.track.toCurrentSong()
-
             PlayerScreen(
-                selectedSong = currentSong
+                trackUri = route.trackId
             )
         }
-
     }
 
 

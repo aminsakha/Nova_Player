@@ -48,7 +48,6 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit
     var selectedTab by rememberSaveable {
         mutableStateOf(HomeTabs.TRACKS)
     }
-    val navController = rememberNavController()
     AudioPermissionHandler(
         onPermissionGranted = {
             viewModel.onAction(
@@ -139,7 +138,6 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit
                                 }
                             }
                         }
-
                         HomeTabs.FAVORITES -> FavoritesTab()
                         HomeTabs.RECENT -> RecentTab()
                     }

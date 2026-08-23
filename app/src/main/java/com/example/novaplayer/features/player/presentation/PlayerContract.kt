@@ -1,5 +1,6 @@
 package com.example.novaplayer.features.player.presentation
 
+import com.example.novaplayer.features.home.presentation.contract.HomeContract
 import com.example.novaplayer.features.player.domain.CurrentSong
 
 object PlayerContract {
@@ -14,6 +15,9 @@ object PlayerContract {
     )
 
     sealed interface UiAction {
+        data class GetTrack(
+            val uri: String
+        ) : UiAction
 
         data class SelectSong(
             val song: CurrentSong

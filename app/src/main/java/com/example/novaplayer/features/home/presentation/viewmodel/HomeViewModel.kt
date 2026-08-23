@@ -18,6 +18,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getTracksUseCase: GetTracksUseCase
 ) : ViewModel() {
+    private val _track = MutableStateFlow<Track?>(null)
+    val track = _track.asStateFlow()
     private val _uiState = MutableStateFlow(
         HomeContract.UiState()
     )
@@ -26,10 +28,15 @@ class HomeViewModel @Inject constructor(
 
     fun onAction(action: HomeContract.UiAction) {
         when (action) {
-            HomeContract.UiAction.GetTracks -> getTracks()
+            is HomeContract.UiAction.GetTracks -> getTracks()
+            is HomeContract.UiAction.GetTrack -> loadTrack(action.uri)
         }
     }
-
+    fun loadTrack(uri: String) {
+        viewModelScope.launch {
+            _track.value = getTracksUseCase.getTrack(uri)
+        }
+    }
     private fun getTracks() {
         viewModelScope.launch {
 
@@ -40,7 +47,7 @@ class HomeViewModel @Inject constructor(
             }
 
             try {
-                val tracks = getTracksUseCase()
+                val tracks =getTracksUseCase.getAllTrack()
 
                 _uiState.update {
                     it.copy(

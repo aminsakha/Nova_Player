@@ -8,7 +8,10 @@ class GetTracksUseCase @Inject constructor(
     private val repository: TrackRepository
 ) {
 
-    suspend operator fun invoke(): List<Track> {
-        return repository.getTracks()
+    suspend  fun getAllTrack(): List<Track> {
+        return repository.getAllTracks()
+    }
+    suspend fun getTrack(uri:String): Track?{
+        return repository.getTrack(uri)
     }
 }

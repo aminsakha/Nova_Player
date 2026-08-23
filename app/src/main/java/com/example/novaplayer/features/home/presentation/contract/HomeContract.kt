@@ -11,6 +11,9 @@ object HomeContract {
 
     sealed interface UiAction {
         data object GetTracks : UiAction
+        data class GetTrack(
+            val uri: String
+        ) : UiAction
     }
 }
 
