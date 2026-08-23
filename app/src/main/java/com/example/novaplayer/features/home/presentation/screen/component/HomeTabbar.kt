@@ -61,7 +61,6 @@ fun HomeTabBar(
                     textAlign = TextAlign.Center,
                     text = stringResource(tab.titleRes),
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
                     color = if (isSelected) {
                         MaterialTheme.colorScheme.primary
                     } else {

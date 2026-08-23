@@ -10,22 +10,29 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.novaplayer.features.home.domain.model.Track
 import com.example.novaplayer.features.home.domain.model.fakeTracks
 import com.example.novaplayer.features.home.presentation.screen.component.SongItemCard
 
 @Composable
-fun TracksTab(modifier: Modifier = Modifier) {
-    Box(Modifier.fillMaxSize().padding(top = 16.dp, start = 8.dp, end = 8.dp)) {
-        Column() {
-            LazyColumn(Modifier.fillMaxHeight()) {
-                items(fakeTracks) {
-
-                    SongItemCard(it)
-                }
-            }
-
-
+fun TracksTab(
+    tracks: List<Track>,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(
+                top = 16.dp,
+                start = 8.dp,
+                end = 8.dp
+            )
+    ) {
+        items(
+            items = tracks,
+            key = { track -> track.id }
+        ) { track ->
+            SongItemCard(track)
         }
     }
-
 }
