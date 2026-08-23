@@ -4,10 +4,11 @@ import android.content.ContentUris
 import android.content.Context
 import android.provider.MediaStore
 import com.example.novaplayer.features.home.data.model.TrackDto
+import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 
 class MediaStoreAudioDataSource @Inject constructor(
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : LocalAudioDataSource {
 
     override suspend fun getTracks(): List<TrackDto> {
