@@ -226,7 +226,8 @@ class PlayerViewModel @Inject constructor(
         }
 
         playerController.playSelectedSong(
-            uri = song.uri
+            uri = song.uri,
+            song = song
         )
 
         _uiState.update {
@@ -444,7 +445,7 @@ class PlayerViewModel @Inject constructor(
     // ------------------------------------------------------------------------
 
     override fun onCleared() {
-        playerController.release()
+
         super.onCleared()
     }
 }

@@ -1,6 +1,5 @@
 package com.example.novaplayer.features.home.presentation.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,21 +36,18 @@ import com.example.novaplayer.features.home.presentation.contract.HomeContract
 import com.example.novaplayer.features.home.presentation.contract.LoadingState
 import com.example.novaplayer.features.home.presentation.permission.AudioPermissionHandler
 import com.example.novaplayer.features.home.presentation.screen.component.HomeTabBar
-import com.example.novaplayer.features.home.presentation.screen.component.MiniPlayerComp
+import com.example.novaplayer.features.miniplayer.presentation.MiniPlayerComp
 import com.example.novaplayer.features.home.presentation.screen.component.Toolbar
 import com.example.novaplayer.features.home.presentation.tabs.FavoritesTab
 import com.example.novaplayer.features.home.presentation.tabs.PlayListTab
 import com.example.novaplayer.features.home.presentation.tabs.RecentTab
 import com.example.novaplayer.features.home.presentation.tabs.TracksTab
 import com.example.novaplayer.features.home.presentation.viewmodel.HomeViewModel
-import com.example.novaplayer.ui.theme.NovaPrimary
 import com.kyant.backdrop.backdrops.LayerBackdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 import com.kyant.backdrop.drawBackdrop
-import com.kyant.backdrop.effects.blur
 import com.kyant.backdrop.effects.lens
-import com.kyant.backdrop.effects.vibrancy
 
 
 @Composable
@@ -212,9 +208,7 @@ fun HomeContent(
                 )
 
             ){
-                MiniPlayerComp(
-
-                )
+                MiniPlayerComp()
             }
 
 
