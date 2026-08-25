@@ -4,10 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -21,14 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
 import com.example.novaplayer.R
-import com.example.novaplayer.core.ui.theme.Space2
 import com.example.novaplayer.features.home.domain.model.HomeTabs
 import com.example.novaplayer.features.home.domain.model.Track
+import com.example.novaplayer.features.home.domain.model.fakeTracks
 import com.example.novaplayer.features.home.presentation.contract.HomeContract
 import com.example.novaplayer.features.home.presentation.contract.LoadingState
 import com.example.novaplayer.features.home.presentation.permission.AudioPermissionHandler
@@ -40,14 +44,24 @@ import com.example.novaplayer.features.home.presentation.tabs.PlayListTab
 import com.example.novaplayer.features.home.presentation.tabs.RecentTab
 import com.example.novaplayer.features.home.presentation.tabs.TracksTab
 import com.example.novaplayer.features.home.presentation.viewmodel.HomeViewModel
+import com.example.novaplayer.ui.theme.NovaPrimary
+import com.kyant.backdrop.backdrops.LayerBackdrop
+import com.kyant.backdrop.backdrops.layerBackdrop
+import com.kyant.backdrop.backdrops.rememberLayerBackdrop
+import com.kyant.backdrop.drawBackdrop
+import com.kyant.backdrop.effects.blur
+import com.kyant.backdrop.effects.lens
+import com.kyant.backdrop.effects.vibrancy
 
 
 @Composable
-fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit) {
+fun HomeSc(
+    viewModel: HomeViewModel = hiltViewModel(),
+    onTrackClick: (Track) -> Unit
+) {
+    val backdrop = rememberLayerBackdrop()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var selectedTab by rememberSaveable {
-        mutableStateOf(HomeTabs.TRACKS)
-    }
+
     AudioPermissionHandler(
         onPermissionGranted = {
             viewModel.onAction(
@@ -56,21 +70,32 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit
         }
     )
 
+    HomeContent(
+        backdrop,
+        uiState = uiState,
+        onTrackClick = onTrackClick
+    )
+}
+
+@Composable
+fun HomeContent(
+    backdrop: LayerBackdrop,
+    uiState: HomeContract.UiState,
+    onTrackClick: (Track) -> Unit,
+) {
+    val backgroundColor = MaterialTheme.colorScheme.background
+    var selectedTab by rememberSaveable {
+        mutableStateOf(HomeTabs.TRACKS)
+    }
 
     Scaffold(
+        contentWindowInsets = WindowInsets.captionBar,
         containerColor = Color.Transparent,
         topBar = {
             Toolbar()
         },
-        bottomBar = {
-            Box(
-                modifier = Modifier
-                    .background(Color.Transparent)
-            ) {
-                MiniPlayerComp()
-            }
-        }
-    ) { innerPadding ->
+
+        ) { innerPadding ->
 
         Box(
             modifier = Modifier
@@ -79,72 +104,133 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit
         ) {
 
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(Space2)
+                modifier = Modifier.fillMaxSize().layerBackdrop(backdrop = backdrop),
             ) {
 
                 HomeTabBar(
                     selectedTab = selectedTab,
                     onTabSelected = { selectedTab = it }
                 )
-                Box(Modifier.fillMaxSize()) {
-                    when (selectedTab) {
-                        HomeTabs.PLAYLISTS -> PlayListTab()
-                        HomeTabs.TRACKS -> {
-                            when (uiState.loadingState) {
-                                LoadingState.IDLE,
-                                LoadingState.LOADING -> {
-                                    Box(
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Column(
-                                            horizontalAlignment = Alignment.CenterHorizontally
-                                        ) {
-                                            Text(
-                                                text = stringResource(R.string.loading),
-                                                color = MaterialTheme.colorScheme.primary,
-                                                style = MaterialTheme.typography.bodyMedium
-                                            )
 
-                                            Spacer(modifier = Modifier.height(8.dp))
+                when (selectedTab) {
 
-                                            LinearProgressIndicator(
-                                                modifier = Modifier.width(120.dp),
-                                                color = MaterialTheme.colorScheme.primary
-                                            )
-                                        }
-                                    }
-                                }
+                    HomeTabs.PLAYLISTS -> {
+                        PlayListTab()
+                    }
 
-                                LoadingState.SUCCESS -> {
-                                    TracksTab(tracks = uiState.tracks){
-                                        onTrackClick(it)
-                                    }
-                                }
+                    HomeTabs.TRACKS -> {
+                        when (uiState.loadingState) {
 
-                                LoadingState.ERROR -> {
-                                    Box(
-                                        Modifier.fillMaxSize(),
-                                        contentAlignment = Alignment.Center
+                            LoadingState.IDLE,
+                            LoadingState.LOADING -> {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = stringResource(R.string.error_loading_tracks),
-                                            color = MaterialTheme.colorScheme.error,
+                                            text = stringResource(R.string.loading),
+                                            color = MaterialTheme.colorScheme.primary,
                                             style = MaterialTheme.typography.bodyMedium
+                                        )
+
+                                        Spacer(
+                                            modifier = Modifier.height(8.dp)
+                                        )
+
+                                        LinearProgressIndicator(
+                                            modifier = Modifier.width(120.dp),
+                                            color = MaterialTheme.colorScheme.primary
                                         )
                                     }
                                 }
                             }
+
+                            LoadingState.SUCCESS -> {
+                                TracksTab(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(
+                                            16.dp
+                                        )
+                                        ,
+                                    tracks = uiState.tracks,
+                                    onTrackClicked = onTrackClick
+                                )
+                            }
+
+                            LoadingState.ERROR -> {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(
+                                            R.string.error_loading_tracks
+                                        ),
+                                        color = MaterialTheme.colorScheme.error,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                            }
                         }
-                        HomeTabs.FAVORITES -> FavoritesTab()
-                        HomeTabs.RECENT -> RecentTab()
+                    }
+
+                    HomeTabs.FAVORITES -> {
+                        FavoritesTab()
+                    }
+
+                    HomeTabs.RECENT -> {
+                        RecentTab()
                     }
                 }
-
             }
+            Box( modifier = Modifier
+
+                .fillMaxWidth()
+
+
+                .padding(
+                    horizontal = 12.dp,
+                    vertical = 6.dp
+                )
+
+                .height(90.dp)
+                .align(Alignment.BottomCenter)
+                .drawBackdrop(
+                    backdrop = backdrop,
+                    shape = {
+                        CircleShape
+                    },
+                    effects = {
+
+                        lens(16f.dp.toPx(), 32f.dp.toPx())
+                    },
+                    onDrawSurface = { drawRect(backgroundColor.copy(alpha = 0.8f)) }
+                )
+
+            ){
+                MiniPlayerComp(
+
+                )
+            }
+
+
         }
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun HomeContentPreview() {
+    HomeContent(
+        backdrop = rememberLayerBackdrop(),
+        uiState = HomeContract.UiState(
+            tracks = fakeTracks,
+            loadingState = LoadingState.SUCCESS
+        ),
+
+        ) {}
+}

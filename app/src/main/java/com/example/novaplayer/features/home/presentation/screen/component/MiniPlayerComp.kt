@@ -1,5 +1,6 @@
 package com.example.novaplayer.features.home.presentation.screen.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -32,25 +35,27 @@ import com.example.novaplayer.R
 import com.example.novaplayer.core.ui.theme.AvatarLarge
 import com.example.novaplayer.core.ui.theme.IconLarge
 
+
 @Composable
 fun MiniPlayerComp(
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
 
-            .fillMaxWidth()
-            .padding(
-                horizontal = 12.dp,
-                vertical = 6.dp
-            )
-            .height(80.dp),
-        shape = CircleShape,
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 4.dp
-        ),
+    Card(
+        modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = Color.Transparent
+        ),
+        shape = CircleShape,
+        border = BorderStroke(
+            width = 0.7.dp,
+            brush = Brush.linearGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+                )
+            )
         )
     ) {
         Row(
@@ -89,6 +94,7 @@ fun MiniPlayerComp(
                         alpha = 0.5f
                     ),
                     style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
             }

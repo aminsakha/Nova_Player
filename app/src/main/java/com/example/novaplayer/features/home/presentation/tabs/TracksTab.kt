@@ -14,20 +14,16 @@ import com.example.novaplayer.features.home.domain.model.Track
 
 import com.example.novaplayer.features.home.presentation.screen.component.SongItemCard
 
+
 @Composable
 fun TracksTab(
+
     tracks: List<Track>,
     modifier: Modifier = Modifier,
     onTrackClicked: (Track) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
-            .fillMaxSize()
-            .padding(
-                top = 16.dp,
-                start = 8.dp,
-                end = 8.dp
-            )
     ) {
         items(
             items = tracks,
