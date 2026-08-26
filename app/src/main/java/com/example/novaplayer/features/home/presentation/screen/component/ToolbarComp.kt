@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +19,9 @@ import androidx.compose.ui.unit.dp
 import com.example.novaplayer.core.ui.theme.Space4
 
 @Composable
-fun Toolbar() {
+fun Toolbar(
+    onSettingsClick: () -> Unit
+) {
     Row(Modifier.padding(Space4)) {
         Text(
             "Novaplayer",
@@ -35,11 +38,13 @@ fun Toolbar() {
                 imageVector = Icons.Default.Search, contentDescription = ""
             )
 
-            Icon(
-                modifier = Modifier.size(28.dp),
-
-                imageVector = Icons.Default.Menu, contentDescription = ""
-            )
+            IconButton(onClick = onSettingsClick) {
+                Icon(
+                    modifier = Modifier.size(28.dp),
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Menu"
+                )
+            }
         }
     }
 }

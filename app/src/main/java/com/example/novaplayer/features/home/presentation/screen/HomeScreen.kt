@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +41,7 @@ import com.example.novaplayer.features.home.presentation.tabs.PlayListTab
 import com.example.novaplayer.features.home.presentation.tabs.RecentTab
 import com.example.novaplayer.features.home.presentation.tabs.TracksTab
 import com.example.novaplayer.features.home.presentation.viewmodel.HomeViewModel
+import com.example.novaplayer.features.settings.presentation.screen.SettingsPanel
 
 
 @Composable
@@ -48,6 +50,10 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit
     var selectedTab by rememberSaveable {
         mutableStateOf(HomeTabs.TRACKS)
     }
+    var isSettingsOpen by remember {
+        mutableStateOf(false)
+    }
+
     AudioPermissionHandler(
         onPermissionGranted = {
             viewModel.onAction(
@@ -60,7 +66,11 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
-            Toolbar()
+            Toolbar(
+                onSettingsClick = {
+                    isSettingsOpen = true
+                }
+            )
         },
         bottomBar = {
             Box(
@@ -146,5 +156,11 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit
             }
         }
     }
+    SettingsPanel(
+        visible = isSettingsOpen,
+        onClose = {
+            isSettingsOpen = false
+        }
+    )
 }
 

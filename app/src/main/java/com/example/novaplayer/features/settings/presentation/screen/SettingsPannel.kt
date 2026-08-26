@@ -11,13 +11,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 
 @Composable
 fun SettingsPanel(
@@ -36,31 +34,38 @@ fun SettingsPanel(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.45f))
-                    .clickable(
-                        onClick = onClose
-                    )
+                    .clickable {
+                        onClose()
+                    }
             )
-            AnimatedVisibility(
-                visible = visible,
-                enter = slideInHorizontally(
-                    initialOffsetX = { fullWidth -> fullWidth }
-                ),
-                exit = slideOutHorizontally(
-                    targetOffsetX = { fullWidth -> fullWidth }
-                ),
-                modifier = Modifier.align(Alignment.CenterEnd)
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .fillMaxWidth(0.68f)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(0.68f)
-                        .background(
-                            MaterialTheme.colorScheme.background
-                        )
-                ) {
-                    SettingsScreen(
-                        onClose = onClose
+
+                AnimatedVisibility(
+                    visible = true,
+                    enter = slideInHorizontally(
+                        initialOffsetX = { fullWidth -> fullWidth }
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { fullWidth -> fullWidth }
                     )
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                MaterialTheme.colorScheme.background
+                            )
+                            .clickable { }
+                    ) {
+                        SettingsScreen(
+                            onClose = onClose
+                        )
+                    }
                 }
             }
         }
