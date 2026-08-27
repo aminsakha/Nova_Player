@@ -47,7 +47,9 @@ import com.kyant.backdrop.backdrops.LayerBackdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 import com.kyant.backdrop.drawBackdrop
+import com.kyant.backdrop.effects.blur
 import com.kyant.backdrop.effects.lens
+import com.kyant.backdrop.effects.vibrancy
 
 
 @Composable
@@ -201,7 +203,8 @@ fun HomeContent(
                         CircleShape
                     },
                     effects = {
-
+                        vibrancy()
+                        blur(5f)
                         lens(16f.dp.toPx(), 32f.dp.toPx())
                     },
                     onDrawSurface = { drawRect(backgroundColor.copy(alpha = 0.8f)) }

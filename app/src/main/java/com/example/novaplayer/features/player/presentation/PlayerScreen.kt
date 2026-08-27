@@ -52,7 +52,8 @@ fun PlayerScreen(
      * ViewModel خودش با استفاده از GetTrackUseCase
      * اطلاعات کامل Track را دریافت می‌کند.
      */
-    LaunchedEffect(trackUri) {
+
+    LaunchedEffect(Unit) {
         viewModel.onAction(
             PlayerContract.UiAction.SelectSong(
                 trackUri = trackUri

@@ -340,6 +340,66 @@ class PlayerController @Inject constructor(
             throw error
         }
     }
+
+    fun playPlaylist(
+        songs: List<CurrentSong>,
+        selectedIndex: Int
+    ) {
+        val mediaController = controller ?: run {
+            reportPlaybackError(
+                PlaybackError.PlayerNotConnected
+            )
+            return
+        }
+
+        if (songs.isEmpty()) {
+            return
+        }
+
+        try {
+
+            val mediaItems = songs.map { song ->
+
+                MediaItem.Builder()
+                    .setMediaId(song.id.toString())
+                    .setUri(song.uri)
+                    .setMediaMetadata(
+                        MediaMetadata.Builder()
+                            .setTitle(song.title)
+                            .setArtist(song.artist)
+                            .setArtworkUri(
+                                song.albumArtUri?.toUri()
+                            )
+                            .build()
+                    )
+                    .build()
+            }
+
+            mediaController.setMediaItems(
+                mediaItems,
+                selectedIndex,
+                0L
+            )
+
+            mediaController.prepare()
+            mediaController.play()
+
+        } catch (exception: Exception) {
+
+            Log.e(
+                TAG,
+                "Unable to play playlist",
+                exception
+            )
+        }
+    }
+    fun isCurrentMediaItem(uri: String): Boolean {
+        return controller
+            ?.currentMediaItem
+            ?.localConfiguration
+            ?.uri
+            ?.toString() == uri
+    }
     fun next() {
         val mediaController = controller ?: run {
             reportPlaybackError(PlaybackError.PlayerNotConnected)

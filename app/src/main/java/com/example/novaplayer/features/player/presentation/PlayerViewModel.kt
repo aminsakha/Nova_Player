@@ -1,8 +1,10 @@
 package com.example.novaplayer.features.player.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.novaplayer.core.media.controller.PlayerController
+import com.example.novaplayer.features.home.domain.model.Track
 import com.example.novaplayer.features.home.domain.usecase.GetTracksUseCase
 import com.example.novaplayer.features.player.domain.CurrentSong
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +22,9 @@ class PlayerViewModel @Inject constructor(
     private val playerController: PlayerController,
     private val getTrackUseCase: GetTracksUseCase
 ) : ViewModel() {
+    private var playlist: List<Track> = emptyList()
+
+    private var currentIndex = -1
 
     private val _uiState =
         MutableStateFlow(
@@ -37,6 +42,9 @@ class PlayerViewModel @Inject constructor(
         connectToPlayer()
         observePlaybackErrors()
         observePlaybackProgress()
+        loadPlaylist()
+        observeCurrentMediaItem()
+        observePlayingState()
     }
 
     fun onAction(
@@ -61,16 +69,28 @@ class PlayerViewModel @Inject constructor(
             }
 
             PlayerContract.UiAction.Next -> {
-                showQueueUnavailableError()
+                playerController.next()
             }
 
             PlayerContract.UiAction.Previous -> {
-                showQueueUnavailableError()
+                playerController.previous()
             }
 
             PlayerContract.UiAction.ClearError -> {
                 clearError()
             }
+        }
+    }
+
+    private fun loadPlaylist() {
+        viewModelScope.launch {
+
+            playlist = getTrackUseCase.getAllTrack()
+
+            Log.d(
+                "PLAYER_TEST",
+                "Playlist size = ${playlist.size}"
+            )
         }
     }
 
@@ -81,6 +101,9 @@ class PlayerViewModel @Inject constructor(
     private fun selectSong(
         trackUri: String
     ) {
+        currentIndex = playlist.indexOfFirst {
+            it.uri == trackUri
+        }
         if (trackUri.isBlank()) {
             _uiState.update {
                 it.copy(
@@ -105,7 +128,68 @@ class PlayerViewModel @Inject constructor(
             return
         }
 
+        if (playerController.isCurrentMediaItem(trackUri)) {
+            return
+        }
+
         loadTrack(trackUri)
+    }
+    private fun observePlayingState() {
+        viewModelScope.launch {
+            playerController.isPlaying.collect { isPlaying ->
+
+                _uiState.update {
+                    it.copy(
+                        playbackStatus =
+                            if (isPlaying) {
+                                PlaybackStatus.PLAYING
+                            } else {
+                                PlaybackStatus.PAUSED
+                            }
+                    )
+                }
+            }
+        }
+    }
+    private fun observeCurrentMediaItem() {
+        viewModelScope.launch {
+
+            playerController.currentMediaItem.collect { mediaItem ->
+
+                if (mediaItem == null) {
+                    return@collect
+                }
+
+                val trackUri =
+                    mediaItem.localConfiguration
+                        ?.uri
+                        ?.toString()
+                        ?: return@collect
+
+                val track =
+                    getTrackUseCase.getTrack(trackUri)
+                        ?: return@collect
+
+                val currentSong =
+                    CurrentSong(
+                        id = track.id,
+                        uri = track.uri,
+                        title = track.title,
+                        artist = track.artist,
+                        album = track.album,
+                        duration = track.duration,
+                        albumArtUri = track.albumArtUri
+                    )
+
+                _uiState.update {
+                    it.copy(
+                        currentSong = currentSong,
+                        durationMs = track.duration,
+                        currentPositionMs = 0L
+                    )
+                }
+            }
+        }
     }
 
     // ------------------------------------------------------------------------
@@ -196,6 +280,8 @@ class PlayerViewModel @Inject constructor(
                     pendingTrackUri = null
 
                     loadTrack(uri)
+                    Log.d(
+                        "PLAYER_TEST",currentIndex.toString())
                 }
 
             } catch (exception: Exception) {
@@ -225,9 +311,21 @@ class PlayerViewModel @Inject constructor(
             return
         }
 
-        playerController.playSelectedSong(
-            uri = song.uri,
-            song = song
+        val currentSongs = playlist.map { track ->
+            CurrentSong(
+                id = track.id,
+                uri = track.uri,
+                title = track.title,
+                artist = track.artist,
+                album = track.album,
+                duration = track.duration,
+                albumArtUri = track.albumArtUri
+            )
+        }
+
+        playerController.playPlaylist(
+            songs = currentSongs,
+            selectedIndex = currentIndex
         )
 
         _uiState.update {
@@ -268,32 +366,10 @@ class PlayerViewModel @Inject constructor(
             return
         }
 
-        when (_uiState.value.playbackStatus) {
-
-            PlaybackStatus.PLAYING -> {
-
-                playerController.pause()
-
-                _uiState.update {
-                    it.copy(
-                        playbackStatus =
-                            PlaybackStatus.PAUSED
-                    )
-                }
-            }
-
-            PlaybackStatus.PAUSED,
-            PlaybackStatus.STOPPED -> {
-
-                playerController.play()
-
-                _uiState.update {
-                    it.copy(
-                        playbackStatus =
-                            PlaybackStatus.PLAYING
-                    )
-                }
-            }
+        if (playerController.isPlaying()) {
+            playerController.pause()
+        } else {
+            playerController.play()
         }
     }
 
