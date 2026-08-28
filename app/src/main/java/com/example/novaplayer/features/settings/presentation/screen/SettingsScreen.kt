@@ -16,13 +16,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.novaplayer.R
 import com.example.novaplayer.features.settings.presentation.contract.SettingsContract
+import com.example.novaplayer.features.settings.presentation.screen.components.LanguageSelector
+import com.example.novaplayer.features.settings.presentation.screen.components.ThemeSelector
 import com.example.novaplayer.features.settings.presentation.viewmodel.SettingsViewModel
 
 @Composable
@@ -45,7 +49,7 @@ fun SettingsScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Settings",
+                text = stringResource(R.string.settings),
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -54,7 +58,7 @@ fun SettingsScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Close settings"
+                    contentDescription = stringResource(R.string.close_settings)
                 )
             }
         }
@@ -64,7 +68,7 @@ fun SettingsScreen(
         )
 
         Text(
-            text = "Appearance",
+            text = stringResource(R.string.appearance),
             style = MaterialTheme.typography.titleMedium
         )
 
@@ -80,6 +84,27 @@ fun SettingsScreen(
                 )
             }
         )
+
+        Spacer(
+            modifier = Modifier.height(24.dp)
+        )
+
+        Text(
+            text = stringResource(R.string.language),
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Spacer(
+            modifier = Modifier.height(12.dp)
+        )
+
+        LanguageSelector(
+            selectedLanguage = uiState.language,
+            onLanguageSelected = { language ->
+                viewModel.onAction(
+                    SettingsContract.UiAction.SetLanguage(language)
+                )
+            }
+        )
     }
 }
-

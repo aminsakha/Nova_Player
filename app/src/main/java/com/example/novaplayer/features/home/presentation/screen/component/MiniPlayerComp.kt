@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.novaplayer.R
@@ -76,7 +77,7 @@ fun MiniPlayerComp(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Music Name",
+                    text = stringResource(R.string.music_name),
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -84,7 +85,7 @@ fun MiniPlayerComp(
                 )
 
                 Text(
-                    text = "Singer Name",
+                    text = stringResource(R.string.singer_name),
                     color = MaterialTheme.colorScheme.onSurface.copy(
                         alpha = 0.5f
                     ),

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">نوا پلیر</string>
+
+    <string name="home_tab_playlists">لیست پخش</string>
+    <string name="home_tab_tracks">آهنگ‌ها</string>
+    <string name="home_tab_favorites">علاقه‌مندی‌ها</string>
+    <string name="home_tab_recent">اخیر</string>
+
+    <string name="loading">در حال بارگذاری...</string>
+    <string name="error_loading_tracks">خطا در بارگذاری آهنگ‌ها</string>
+
+    <string name="settings">تنظیمات</string>
+    <string name="appearance">ظاهر</string>
+    <string name="language">زبان</string>
+    <string name="theme">پوسته</string>
+
+    <string name="english">انگلیسی</string>
+    <string name="persian">فارسی</string>
+
+    <string name="system">سیستم</string>
+    <string name="light">روشن</string>
+    <string name="dark">تیره</string>
+
+    <string name="close_settings">بستن تنظیمات</string>
+
+    <string name="music_name">نام آهنگ</string>
+    <string name="singer_name">نام خواننده</string>
+
+    <string name="unknown_song">آهنگ ناشناس</string>
+    <string name="unknown_artist">خواننده ناشناس</string>
+</resources>

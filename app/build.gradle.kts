@@ -76,6 +76,8 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
+    implementation(libs.androidx.appcompat)
+
 
     // =========================
     // Media3

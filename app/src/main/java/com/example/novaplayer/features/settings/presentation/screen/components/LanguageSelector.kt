@@ -1,4 +1,4 @@
-package com.example.novaplayer.features.settings.presentation.screen
+package com.example.novaplayer.features.settings.presentation.screen.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
@@ -13,22 +13,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.novaplayer.features.settings.domain.model.ThemeMode
+import androidx.compose.ui.res.stringResource
+import com.example.novaplayer.R
+import com.example.novaplayer.features.settings.domain.model.AppLanguage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ThemeSelector(
-    selectedTheme: ThemeMode,
-    onThemeSelected: (ThemeMode) -> Unit
+fun LanguageSelector(
+    selectedLanguage: AppLanguage,
+    onLanguageSelected: (AppLanguage) -> Unit
 ) {
     var expanded by remember {
         mutableStateOf(false)
     }
 
-    val selectedText = when (selectedTheme) {
-        ThemeMode.SYSTEM -> "System"
-        ThemeMode.LIGHT -> "Light"
-        ThemeMode.DARK -> "Dark"
+    val selectedText = when (selectedLanguage) {
+        AppLanguage.EN -> stringResource(R.string.english)
+        AppLanguage.FA -> stringResource(R.string.persian)
     }
 
     ExposedDropdownMenuBox(
@@ -44,7 +45,7 @@ fun ThemeSelector(
             onValueChange = {},
             readOnly = true,
             label = {
-                Text("Theme")
+                Text(stringResource(R.string.language))
             },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
@@ -63,20 +64,19 @@ fun ThemeSelector(
             }
         ) {
 
-            ThemeMode.entries.forEach { theme ->
+            AppLanguage.entries.forEach { language ->
 
                 DropdownMenuItem(
                     text = {
                         Text(
-                            when (theme) {
-                                ThemeMode.SYSTEM -> "System"
-                                ThemeMode.LIGHT -> "Light"
-                                ThemeMode.DARK -> "Dark"
+                            when (language) {
+                                AppLanguage.EN -> stringResource(R.string.english)
+                                AppLanguage.FA -> stringResource(R.string.persian)
                             }
                         )
                     },
                     onClick = {
-                        onThemeSelected(theme)
+                        onLanguageSelected(language)
                         expanded = false
                     }
                 )
