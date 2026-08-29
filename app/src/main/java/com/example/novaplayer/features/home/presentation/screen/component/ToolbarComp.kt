@@ -9,36 +9,60 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.novaplayer.R
 import com.example.novaplayer.core.ui.theme.Space4
 
 @Composable
-fun Toolbar() {
-    Row(Modifier.padding(Space4)) {
+fun Toolbar(
+    showSearch: Boolean,
+    onSearchClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.padding(Space4)
+    ) {
         Text(
-            "Novaplayer",
+            text = "Novaplayer",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
-        Spacer(Modifier.weight(1f))
+
+        Spacer(
+            modifier = Modifier.weight(1f)
+        )
+
         Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement =
+                Arrangement.spacedBy(8.dp)
         ) {
-            Icon(
-                modifier = Modifier.size(28.dp),
-                imageVector = Icons.Default.Search, contentDescription = ""
-            )
+            if (showSearch) {
+                IconButton(
+                    onClick = onSearchClick
+                ) {
+                    Icon(
+                        modifier = Modifier.size(28.dp),
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(
+                            R.string.search
+                        )
+                    )
+                }
+            }
 
             Icon(
-                modifier = Modifier.size(28.dp),
-
-                imageVector = Icons.Default.Menu, contentDescription = ""
+                modifier = Modifier
+                    .size(28.dp)
+                    .padding(top = 4.dp),
+                imageVector = Icons.Default.Menu,
+                contentDescription = null
             )
         }
     }

@@ -55,10 +55,12 @@ import com.kyant.backdrop.effects.vibrancy
 @Composable
 fun HomeSc(
     viewModel: HomeViewModel = hiltViewModel(),
-    onTrackClick: (Track) -> Unit
+    onTrackClick: (Track) -> Unit,
+    onSearchClick: () -> Unit
 ) {
     val backdrop = rememberLayerBackdrop()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by
+    viewModel.uiState.collectAsStateWithLifecycle()
 
     AudioPermissionHandler(
         onPermissionGranted = {
@@ -69,9 +71,10 @@ fun HomeSc(
     )
 
     HomeContent(
-        backdrop,
+        backdrop = backdrop,
         uiState = uiState,
-        onTrackClick = onTrackClick
+        onTrackClick = onTrackClick,
+        onSearchClick = onSearchClick
     )
 }
 
@@ -80,6 +83,7 @@ fun HomeContent(
     backdrop: LayerBackdrop,
     uiState: HomeContract.UiState,
     onTrackClick: (Track) -> Unit,
+    onSearchClick: () -> Unit
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
     var selectedTab by rememberSaveable {
@@ -90,7 +94,11 @@ fun HomeContent(
         contentWindowInsets = WindowInsets.captionBar,
         containerColor = Color.Transparent,
         topBar = {
-            Toolbar()
+            Toolbar(
+                showSearch =
+                    selectedTab == HomeTabs.TRACKS,
+                onSearchClick = onSearchClick
+            )
         },
 
         ) { innerPadding ->
@@ -228,6 +236,7 @@ fun HomeContentPreview() {
             tracks = fakeTracks,
             loadingState = LoadingState.SUCCESS
         ),
-
-        ) {}
+        onTrackClick = {},
+        onSearchClick = {}
+    )
 }

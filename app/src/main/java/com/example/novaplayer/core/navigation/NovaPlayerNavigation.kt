@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.novaplayer.features.home.presentation.screen.HomeSc
 import com.example.novaplayer.features.player.presentation.PlayerScreen
+import com.example.novaplayer.features.search.presentation.SearchScreen
 
 @Composable
 fun NovaPlayerNavigation() {
@@ -17,24 +18,44 @@ fun NovaPlayerNavigation() {
         startDestination = HomeScreenRoute
     ) {
         composable<HomeScreenRoute> {
-            HomeSc { track ->
-
-                navController.navigate(
-                    PlayerScreenRoute(
-                        trackId = track.uri
+            HomeSc(
+                onTrackClick = { track ->
+                    navController.navigate(
+                        PlayerScreenRoute(
+                            trackId = track.uri
+                        )
                     )
-                )
-            }
+                },
+                onSearchClick = {
+                    navController.navigate(
+                        SearchScreenRoute
+                    )
+                }
+            )
         }
-        composable<PlayerScreenRoute> { backStackEntry ->
 
-            val route = backStackEntry.toRoute<PlayerScreenRoute>()
+        composable<SearchScreenRoute> {
+            SearchScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onTrackClick = { track ->
+                    navController.navigate(
+                        PlayerScreenRoute(
+                            trackId = track.uri
+                        )
+                    )
+                }
+            )
+        }
+
+        composable<PlayerScreenRoute> { backStackEntry ->
+            val route =
+                backStackEntry.toRoute<PlayerScreenRoute>()
 
             PlayerScreen(
                 trackUri = route.trackId
             )
         }
     }
-
-
 }

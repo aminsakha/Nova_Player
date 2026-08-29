@@ -7,4 +7,13 @@
 
     <string name="loading">Loading...</string>
     <string name="error_loading_tracks">Error loading tracks</string>
+    <string name="search">Search</string>
+    <string name="recent_searches">Recent Searches</string>
+    <string name="search_results">Results</string>
+    <string name="no_search_results">No songs found</string>
+    <string name="search_permission_required">Audio permission is required</string>
+    <string name="retry">Retry</string>
+    <string name="back">Back</string>
+    <string name="remove_recent_search">Remove recent search</string>
+    <string name="more_options">More options</string>
 </resources>
