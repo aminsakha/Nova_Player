@@ -20,10 +20,9 @@ import com.example.novaplayer.core.ui.theme.NovaPlayerTheme
 import com.example.novaplayer.features.player.domain.CurrentSong
 import com.example.novaplayer.features.settings.domain.model.ThemeMode
 import com.example.novaplayer.features.settings.presentation.viewmodel.SettingsViewModel
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
-import androidx.compose.runtime.LaunchedEffect
-import com.example.novaplayer.features.settings.domain.model.AppLanguage
+//import androidx.compose.ui.platform.LocalLayoutDirection
+//import androidx.compose.ui.unit.LayoutDirection
+//import androidx.compose.runtime.CompositionLocalProvider
 
 @Composable
 fun MusicPlayerApp() {
@@ -53,21 +52,27 @@ fun MusicPlayerApp() {
             albumArtUri = ""
         )
     }
-    NovaPlayerTheme(
-        darkTheme = darkTheme
-    ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize()
-        ) { innerPadding ->
+    // Forcing Compose to stay LTR
+//    CompositionLocalProvider(
+//        LocalLayoutDirection provides LayoutDirection.Ltr
+//    ) {
+        NovaPlayerTheme(
+            darkTheme = darkTheme
+        ) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize()
+            ) { innerPadding ->
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                ) {
 
-                NovaPlayerNavigation()
+                    NovaPlayerNavigation()
+                }
             }
         }
-    }
+//    }
+
 }

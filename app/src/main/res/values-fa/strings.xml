@@ -13,15 +13,73 @@
 
     <string name="settings">تنظیمات</string>
     <string name="appearance">ظاهر</string>
-    <string name="language">زبان</string>
-    <string name="theme">پوسته</string>
+    <string name="about">درباره</string>
 
+    <string name="language">زبان</string>
     <string name="english">انگلیسی</string>
     <string name="persian">فارسی</string>
 
+    <string name="theme">پوسته</string>
     <string name="system">سیستم</string>
     <string name="light">روشن</string>
     <string name="dark">تیره</string>
+
+    <string name="about_us">درباره ما</string>
+
+    <string name="feel_the_music">موسیقی به سبک شما.</string>
+    <string name="version">نسخه ۱.۰.۰</string>
+
+    <string name="about_project">درباره پروژه</string>
+
+    <string name="about_description">
+    نوا پلیر یک پخش‌کننده موسیقی مدرن برای اندروید است که
+    با هدف ارائه تجربه‌ای ساده و لذت‌بخش برای پیدا کردن و
+    پخش موسیقی‌های ذخیره‌شده روی دستگاه طراحی شده است.
+</string>
+
+    <string name="our_team">تیم ما</string>
+
+    <string name="team_lead">تیم لید</string>
+    <string name="team_members">اعضای تیم</string>
+
+    <string name="Amin_Sakha">امین سخا</string>
+    <string name="Behnam_Mahjoob">بهنام محجوب</string>
+    <string name="Abolfazl_Khalili">ابوالفضل خلیلی</string>
+    <string name="Leila_Abdi">لیلا عبدی</string>
+    <string name="Parsa_Ghazvinian">پارسا قزوینیان</string>
+    <string name="Shayan_Armannia">شایان آرمان نیا</string>
+
+    <string name="more_information">اطلاعات بیشتر</string>
+
+    <string name="contact_us">تماس با ما</string>
+
+    <string name="contact_us_summary">
+    با تیم NovaPlayer در ارتباط باشید
+</string>
+
+    <string name="contact_us_description">
+    سؤال، پیشنهاد یا مشکلی دارید؟
+    می‌توانید با یکی از اعضای تیم ما در ارتباط باشید.
+</string>
+
+    <string name="Amin_Sakha_email">amin.sakha@gmail.com</string>
+    <string name="Behnam_Mahjoob_email">behnam.mahjoob@gmail.com</string>
+    <string name="Abolfazl_Khalili_email">abolfazl.khalili@gmail.com</string>
+    <string name="Leila_Abdi_email">leila.abdi@gmail.com</string>
+    <string name="Parsa_Ghazvinian_email">parsa.ghazvinian@gmail.com</string>
+    <string name="Shayan_Armannia_email">shayan.armannia@gmail.com</string>
+
+
+    <string name="close">بستن</string>
+
+    <!-- Privacy Policy -->
+    <string name="privacy_policy">حریم خصوصی</string>
+
+    <string name="privacy_policy_summary">
+    نحوه مدیریت اطلاعات در NovaPlayer را مشاهده کنید
+</string>
+
+    <string name="back">بازگشت</string>
 
     <string name="close_settings">بستن تنظیمات</string>
 

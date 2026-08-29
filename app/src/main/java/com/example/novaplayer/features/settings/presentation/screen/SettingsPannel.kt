@@ -20,7 +20,8 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun SettingsPanel(
     visible: Boolean,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onAboutClick: () -> Unit
 ) {
     AnimatedVisibility(
         visible = visible,
@@ -63,7 +64,8 @@ fun SettingsPanel(
                             .clickable { }
                     ) {
                         SettingsScreen(
-                            onClose = onClose
+                            onClose = onClose,
+                            onAboutClick = onAboutClick
                         )
                     }
                 }

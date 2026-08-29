@@ -45,7 +45,11 @@ import com.example.novaplayer.features.settings.presentation.screen.SettingsPane
 
 
 @Composable
-fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit) {
+fun HomeSc(
+    onTrackClick: (Track) -> Unit,
+    onAboutClick: () -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable {
         mutableStateOf(HomeTabs.TRACKS)
@@ -129,7 +133,7 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit
                                 }
 
                                 LoadingState.SUCCESS -> {
-                                    TracksTab(tracks = uiState.tracks){
+                                    TracksTab(tracks = uiState.tracks) {
                                         onTrackClick(it)
                                     }
                                 }
@@ -148,6 +152,7 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit
                                 }
                             }
                         }
+
                         HomeTabs.FAVORITES -> FavoritesTab()
                         HomeTabs.RECENT -> RecentTab()
                     }
@@ -160,6 +165,10 @@ fun HomeSc(viewModel: HomeViewModel = hiltViewModel(),onTrackClick:(Track)->Unit
         visible = isSettingsOpen,
         onClose = {
             isSettingsOpen = false
+        },
+        onAboutClick = {
+            isSettingsOpen = false
+            onAboutClick()
         }
     )
 }
