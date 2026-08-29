@@ -232,6 +232,9 @@ private fun PlaybackSeekBar(
             val progressX =
                 size.width * progress
 
+            val trackStrokeWidth =
+                4.dp.toPx()
+
             drawLine(
                 color = inactiveColor,
                 start = Offset(
@@ -242,7 +245,7 @@ private fun PlaybackSeekBar(
                     x = size.width,
                     y = centerY
                 ),
-                strokeWidth = 2.dp.toPx(),
+                strokeWidth = trackStrokeWidth,
                 cap = StrokeCap.Round
             )
 
@@ -256,7 +259,7 @@ private fun PlaybackSeekBar(
                     x = progressX,
                     y = centerY
                 ),
-                strokeWidth = 2.dp.toPx(),
+                strokeWidth = trackStrokeWidth,
                 cap = StrokeCap.Round
             )
 
