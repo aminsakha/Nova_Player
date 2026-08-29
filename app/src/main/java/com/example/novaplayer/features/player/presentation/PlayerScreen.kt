@@ -121,7 +121,7 @@ private fun PlayerScreenContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp)
-                .aspectRatio(1f)
+                .aspectRatio(4f / 5f)
         )
 
         Spacer(
@@ -135,6 +135,10 @@ private fun PlayerScreenContent(
             onFavoriteClick = {
                 onFavoriteClick(currentSong)
             }
+        )
+
+        Spacer(
+            modifier = Modifier.height(24.dp)
         )
 
         PlayerControls(
@@ -200,7 +204,7 @@ private fun CurrentSongInformation(
                     "Unknown song"
                 },
                 style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Start,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
