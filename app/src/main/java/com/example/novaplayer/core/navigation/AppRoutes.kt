@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 object  HomeScreenRoute
 
+@Serializable
+object SearchScreenRoute
 
 @Serializable
 data class PlayerScreenRoute(
