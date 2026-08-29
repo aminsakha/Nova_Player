@@ -132,7 +132,7 @@ fun MiniPlayerComp(
                         Icons.Default.PlayArrow
                     },
                     contentDescription = "Play",
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(IconLarge)
                 )
             }

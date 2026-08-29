@@ -20,7 +20,7 @@ private val DarkColorScheme = darkColorScheme(
     secondary = NovaSecondary,
     onSecondary = Color.Black,
 
-    tertiary = NovaAccent,
+    tertiary = Color.White,
     onTertiary = Color.Black,
 
 
@@ -48,7 +48,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = NovaSecondary,
     onSecondary = Color.Black,
 
-    tertiary = NovaAccent,
+    tertiary = Color.Black,
     onTertiary = Color.Black,
 
 
