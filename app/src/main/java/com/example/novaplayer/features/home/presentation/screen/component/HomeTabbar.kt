@@ -58,6 +58,7 @@ fun HomeTabBar(
                     .padding(8.dp)
             ) {
                 Text(
+                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     text = stringResource(tab.titleRes),
                     style = MaterialTheme.typography.bodyLarge,
