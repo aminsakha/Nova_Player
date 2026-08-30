@@ -1,11 +1,13 @@
 package com.example.novaplayer.features.home.presentation.screen.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -18,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.example.novaplayer.core.ui.theme.Space4
 
 @Composable
-fun Toolbar() {
+fun Toolbar(addIconShowed: Boolean) {
     Row(Modifier.padding(Space4)) {
         Text(
             "Novaplayer",
@@ -29,7 +31,19 @@ fun Toolbar() {
         Spacer(Modifier.weight(1f))
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
+
+
         ) {
+
+            if (addIconShowed.equals(true)) {
+                AnimatedVisibility(addIconShowed) {
+                    Icon(
+                        modifier = Modifier.size(28.dp),
+                        imageVector = Icons.Default.Add, contentDescription = ""
+                    )
+                }
+
+            }
             Icon(
                 modifier = Modifier.size(28.dp),
                 imageVector = Icons.Default.Search, contentDescription = ""

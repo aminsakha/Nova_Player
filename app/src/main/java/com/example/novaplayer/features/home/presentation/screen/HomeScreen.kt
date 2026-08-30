@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -81,6 +82,7 @@ fun HomeContent(
     uiState: HomeContract.UiState,
     onTrackClick: (Track) -> Unit,
 ) {
+    var showAddPlaylistIcon by remember { mutableStateOf(false) }
     val backgroundColor = MaterialTheme.colorScheme.background
     var selectedTab by rememberSaveable {
         mutableStateOf(HomeTabs.TRACKS)
@@ -90,7 +92,7 @@ fun HomeContent(
         contentWindowInsets = WindowInsets.captionBar,
         containerColor = Color.Transparent,
         topBar = {
-            Toolbar()
+            Toolbar(addIconShowed =showAddPlaylistIcon)
         },
 
         ) { innerPadding ->
@@ -102,7 +104,9 @@ fun HomeContent(
         ) {
 
             Column(
-                modifier = Modifier.fillMaxSize().layerBackdrop(backdrop = backdrop),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .layerBackdrop(backdrop = backdrop),
             ) {
 
                 HomeTabBar(
@@ -113,10 +117,12 @@ fun HomeContent(
                 when (selectedTab) {
 
                     HomeTabs.PLAYLISTS -> {
+                        showAddPlaylistIcon=true
                         PlayListTab()
                     }
 
                     HomeTabs.TRACKS -> {
+                        showAddPlaylistIcon=false
                         when (uiState.loadingState) {
 
                             LoadingState.IDLE,
@@ -152,8 +158,7 @@ fun HomeContent(
                                         .fillMaxSize()
                                         .padding(
                                             16.dp
-                                        )
-                                        ,
+                                        ),
                                     tracks = uiState.tracks,
                                     onTrackClicked = onTrackClick
                                 )
@@ -177,40 +182,43 @@ fun HomeContent(
                     }
 
                     HomeTabs.FAVORITES -> {
+                        showAddPlaylistIcon=false
                         FavoritesTab()
                     }
 
                     HomeTabs.RECENT -> {
+                        showAddPlaylistIcon=false
                         RecentTab()
                     }
                 }
             }
-            Box( modifier = Modifier
+            Box(
+                modifier = Modifier
 
-                .fillMaxWidth()
+                    .fillMaxWidth()
 
 
-                .padding(
-                    horizontal = 12.dp,
-                    vertical = 6.dp
-                )
+                    .padding(
+                        horizontal = 12.dp,
+                        vertical = 6.dp
+                    )
 
-                .height(90.dp)
-                .align(Alignment.BottomCenter)
-                .drawBackdrop(
-                    backdrop = backdrop,
-                    shape = {
-                        CircleShape
-                    },
-                    effects = {
-                        vibrancy()
-                        blur(5f)
-                        lens(16f.dp.toPx(), 32f.dp.toPx())
-                    },
-                    onDrawSurface = { drawRect(backgroundColor.copy(alpha = 0.8f)) }
-                )
+                    .height(90.dp)
+                    .align(Alignment.BottomCenter)
+                    .drawBackdrop(
+                        backdrop = backdrop,
+                        shape = {
+                            CircleShape
+                        },
+                        effects = {
+                            vibrancy()
+                            blur(5f)
+                            lens(16f.dp.toPx(), 32f.dp.toPx())
+                        },
+                        onDrawSurface = { drawRect(backgroundColor.copy(alpha = 0.8f)) }
+                    )
 
-            ){
+            ) {
                 MiniPlayerComp()
             }
 
