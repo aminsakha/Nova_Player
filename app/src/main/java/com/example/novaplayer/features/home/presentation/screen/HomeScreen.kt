@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -82,17 +81,17 @@ fun HomeContent(
     uiState: HomeContract.UiState,
     onTrackClick: (Track) -> Unit,
 ) {
-    var showAddPlaylistIcon by remember { mutableStateOf(false) }
     val backgroundColor = MaterialTheme.colorScheme.background
     var selectedTab by rememberSaveable {
         mutableStateOf(HomeTabs.TRACKS)
     }
+    var showAddPlaylistIcon =selectedTab == HomeTabs.PLAYLISTS
 
     Scaffold(
         contentWindowInsets = WindowInsets.captionBar,
         containerColor = Color.Transparent,
         topBar = {
-            Toolbar(addIconShowed =showAddPlaylistIcon)
+            Toolbar(showAddIcon = showAddPlaylistIcon)
         },
 
         ) { innerPadding ->
@@ -117,12 +116,12 @@ fun HomeContent(
                 when (selectedTab) {
 
                     HomeTabs.PLAYLISTS -> {
-                        showAddPlaylistIcon=true
+
                         PlayListTab()
                     }
 
                     HomeTabs.TRACKS -> {
-                        showAddPlaylistIcon=false
+
                         when (uiState.loadingState) {
 
                             LoadingState.IDLE,
@@ -182,12 +181,12 @@ fun HomeContent(
                     }
 
                     HomeTabs.FAVORITES -> {
-                        showAddPlaylistIcon=false
+
                         FavoritesTab()
                     }
 
                     HomeTabs.RECENT -> {
-                        showAddPlaylistIcon=false
+
                         RecentTab()
                     }
                 }
