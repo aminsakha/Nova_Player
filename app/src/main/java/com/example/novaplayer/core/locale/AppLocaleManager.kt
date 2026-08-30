@@ -1,12 +1,11 @@
 package com.example.novaplayer.core.locale
 
-import android.app.LocaleManager
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import com.example.novaplayer.features.settings.domain.model.AppLanguage
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,15 +22,26 @@ class AppLocaleManager @Inject constructor(
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val localeManager =
-                context.getSystemService(LocaleManager::class.java)
+                context.getSystemService(android.app.LocaleManager::class.java)
 
             localeManager.applicationLocales =
                 android.os.LocaleList.forLanguageTags(languageTag)
-
         } else {
-            AppCompatDelegate.setApplicationLocales(
-                LocaleListCompat.forLanguageTags(languageTag)
-            )
+            applyLegacyLocale(languageTag)
         }
+    }
+
+    private fun applyLegacyLocale(languageTag: String) {
+        val locale = Locale.forLanguageTag(languageTag)
+
+        Locale.setDefault(locale)
+
+        val configuration = Configuration(context.resources.configuration)
+        configuration.setLocale(locale)
+
+        context.resources.updateConfiguration(
+            configuration,
+            context.resources.displayMetrics
+        )
     }
 }

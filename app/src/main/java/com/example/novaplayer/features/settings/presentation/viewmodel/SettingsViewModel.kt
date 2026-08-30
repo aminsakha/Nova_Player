@@ -81,7 +81,8 @@ class SettingsViewModel @Inject constructor(
     private fun setLanguage(language: AppLanguage) {
         viewModelScope.launch {
             setLanguageUseCase(language)
+            appLocaleManager.setLanguage(language)
         }
-        appLocaleManager.setLanguage(language)
+
     }
 }

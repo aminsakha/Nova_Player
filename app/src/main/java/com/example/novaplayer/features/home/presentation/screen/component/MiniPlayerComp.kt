@@ -77,7 +77,7 @@ fun MiniPlayerComp(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = stringResource(R.string.music_name),
+                    text = "Music Name",
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -85,7 +85,7 @@ fun MiniPlayerComp(
                 )
 
                 Text(
-                    text = stringResource(R.string.singer_name),
+                    text = "Singer Name",
                     color = MaterialTheme.colorScheme.onSurface.copy(
                         alpha = 0.5f
                     ),
