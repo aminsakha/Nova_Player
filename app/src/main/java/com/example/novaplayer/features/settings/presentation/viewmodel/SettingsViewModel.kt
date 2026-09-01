@@ -2,7 +2,6 @@ package com.example.novaplayer.features.settings.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.novaplayer.core.locale.AppLocaleManager
 import com.example.novaplayer.features.settings.domain.model.AppLanguage
 import com.example.novaplayer.features.settings.domain.model.ThemeMode
 import com.example.novaplayer.features.settings.domain.usecase.ObserveLanguageUseCase
@@ -23,14 +22,11 @@ class SettingsViewModel @Inject constructor(
     private val observeThemeUseCase: ObserveThemeUseCase,
     private val setThemeUseCase: SetThemeUseCase,
     private val observeLanguageUseCase: ObserveLanguageUseCase,
-    private val setLanguageUseCase: SetLanguageUseCase,
-    private val appLocaleManager: AppLocaleManager
+    private val setLanguageUseCase: SetLanguageUseCase
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(
         SettingsContract.UiState()
     )
-
     val uiState: StateFlow<SettingsContract.UiState> =
         _uiState.asStateFlow()
 
@@ -41,7 +37,6 @@ class SettingsViewModel @Inject constructor(
 
     fun onAction(action: SettingsContract.UiAction) {
         when (action) {
-
             is SettingsContract.UiAction.SetTheme -> {
                 setTheme(action.theme)
             }
@@ -51,7 +46,6 @@ class SettingsViewModel @Inject constructor(
             }
         }
     }
-
     private fun observeTheme() {
         viewModelScope.launch {
             observeThemeUseCase().collect { theme ->
@@ -61,13 +55,11 @@ class SettingsViewModel @Inject constructor(
             }
         }
     }
-
     private fun setTheme(theme: ThemeMode) {
         viewModelScope.launch {
             setThemeUseCase(theme)
         }
     }
-
     private fun observeLanguage() {
         viewModelScope.launch {
             observeLanguageUseCase().collect { language ->
@@ -77,12 +69,9 @@ class SettingsViewModel @Inject constructor(
             }
         }
     }
-
     private fun setLanguage(language: AppLanguage) {
         viewModelScope.launch {
             setLanguageUseCase(language)
-            appLocaleManager.setLanguage(language)
         }
-
     }
 }

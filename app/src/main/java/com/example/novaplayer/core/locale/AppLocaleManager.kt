@@ -1,20 +1,21 @@
 package com.example.novaplayer.core.locale
 
-import android.content.Context
+import android.app.Activity
+import android.app.LocaleManager
 import android.content.res.Configuration
 import android.os.Build
 import com.example.novaplayer.features.settings.domain.model.AppLanguage
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AppLocaleManager @Inject constructor(
-    @ApplicationContext private val context: Context
-) {
+class AppLocaleManager @Inject constructor() {
 
-    fun setLanguage(language: AppLanguage) {
+    fun setLanguage(
+        activity: Activity,
+        language: AppLanguage
+    ) {
         val languageTag = when (language) {
             AppLanguage.EN -> "en"
             AppLanguage.FA -> "fa"
@@ -22,26 +23,40 @@ class AppLocaleManager @Inject constructor(
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val localeManager =
-                context.getSystemService(android.app.LocaleManager::class.java)
+                activity.getSystemService(LocaleManager::class.java)
 
             localeManager.applicationLocales =
                 android.os.LocaleList.forLanguageTags(languageTag)
         } else {
-            applyLegacyLocale(languageTag)
+            applyLegacyLocale(activity, languageTag)
         }
     }
 
-    private fun applyLegacyLocale(languageTag: String) {
+    private fun applyLegacyLocale(
+        activity: Activity,
+        languageTag: String
+    ) {
+        val currentLanguage =
+            activity.resources.configuration.locale.language
+        
+        if (currentLanguage == languageTag) {
+            return
+        }
+
         val locale = Locale.forLanguageTag(languageTag)
 
         Locale.setDefault(locale)
 
-        val configuration = Configuration(context.resources.configuration)
+        val configuration =
+            Configuration(activity.resources.configuration)
+
         configuration.setLocale(locale)
 
-        context.resources.updateConfiguration(
+        activity.resources.updateConfiguration(
             configuration,
-            context.resources.displayMetrics
+            activity.resources.displayMetrics
         )
+
+        activity.recreate()
     }
 }
