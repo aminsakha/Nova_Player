@@ -1,5 +1,6 @@
 package com.example.novaplayer.musicplayer
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,21 +14,35 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     @Inject
     lateinit var observeLanguageUseCase: ObserveLanguageUseCase
+
     @Inject
     lateinit var appLocaleManager: AppLocaleManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
-        setContent {
-            MusicPlayerApp()
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            observeLegacyLanguage()
         }
-        observeLanguage()
+
+        setContent {
+            MusicPlayerApp(
+                onLanguageSelected = { language ->
+                    appLocaleManager.setLanguage(
+                        activity = this@MainActivity,
+                        language = language
+                    )
+                }
+            )
+        }
     }
 
-    private fun observeLanguage() {
+    private fun observeLegacyLanguage() {
         lifecycleScope.launch {
             observeLanguageUseCase().collect { language ->
                 appLocaleManager.setLanguage(

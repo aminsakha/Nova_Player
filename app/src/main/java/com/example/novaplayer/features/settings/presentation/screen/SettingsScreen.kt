@@ -1,5 +1,7 @@
 package com.example.novaplayer.features.settings.presentation.screen
 
+import android.app.Activity
+import android.content.ContextWrapper
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,14 +36,24 @@ import com.example.novaplayer.features.settings.presentation.screen.components.T
 import com.example.novaplayer.features.settings.presentation.viewmodel.SettingsViewModel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.ui.platform.LocalContext
+import com.example.novaplayer.features.settings.domain.model.AppLanguage
 
 @Composable
 fun SettingsScreen(
     onClose: () -> Unit,
     onAboutClick: () -> Unit,
+    onLanguageSelected: (AppLanguage) -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    val activity = when (context) {
+        is Activity -> context
+        is ContextWrapper -> context.baseContext as? Activity
+        else -> null
+    }
 
     Column(
         modifier = Modifier
@@ -112,6 +124,8 @@ fun SettingsScreen(
                 viewModel.onAction(
                     SettingsContract.UiAction.SetLanguage(language)
                 )
+
+                onLanguageSelected(language)
             }
         )
 

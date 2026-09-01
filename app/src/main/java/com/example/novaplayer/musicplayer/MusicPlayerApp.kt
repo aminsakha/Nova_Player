@@ -18,6 +18,7 @@ import com.example.novaplayer.R
 import com.example.novaplayer.core.navigation.NovaPlayerNavigation
 import com.example.novaplayer.core.ui.theme.NovaPlayerTheme
 import com.example.novaplayer.features.player.domain.CurrentSong
+import com.example.novaplayer.features.settings.domain.model.AppLanguage
 import com.example.novaplayer.features.settings.domain.model.ThemeMode
 import com.example.novaplayer.features.settings.presentation.viewmodel.SettingsViewModel
 //import androidx.compose.ui.platform.LocalLayoutDirection
@@ -25,7 +26,9 @@ import com.example.novaplayer.features.settings.presentation.viewmodel.SettingsV
 //import androidx.compose.runtime.CompositionLocalProvider
 
 @Composable
-fun MusicPlayerApp() {
+fun MusicPlayerApp(
+    onLanguageSelected: (AppLanguage) -> Unit
+) {
     val context = LocalContext.current
     val settingsViewModel: SettingsViewModel = hiltViewModel()
     val uiState by settingsViewModel.uiState.collectAsState()
@@ -69,7 +72,9 @@ fun MusicPlayerApp() {
                         .padding(innerPadding)
                 ) {
 
-                    NovaPlayerNavigation()
+                    NovaPlayerNavigation(
+                        onLanguageSelected = onLanguageSelected
+                    )
                 }
             }
         }

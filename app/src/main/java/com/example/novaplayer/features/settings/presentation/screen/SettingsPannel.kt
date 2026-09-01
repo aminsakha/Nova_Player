@@ -16,12 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.example.novaplayer.features.settings.domain.model.AppLanguage
 
 @Composable
 fun SettingsPanel(
     visible: Boolean,
     onClose: () -> Unit,
-    onAboutClick: () -> Unit
+    onAboutClick: () -> Unit,
+    onLanguageSelected: (AppLanguage) -> Unit
 ) {
     AnimatedVisibility(
         visible = visible,
@@ -39,13 +41,13 @@ fun SettingsPanel(
                         onClose()
                     }
             )
+
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .fillMaxHeight()
                     .fillMaxWidth(0.68f)
             ) {
-
                 AnimatedVisibility(
                     visible = true,
                     enter = slideInHorizontally(
@@ -65,7 +67,8 @@ fun SettingsPanel(
                     ) {
                         SettingsScreen(
                             onClose = onClose,
-                            onAboutClick = onAboutClick
+                            onAboutClick = onAboutClick,
+                            onLanguageSelected = onLanguageSelected
                         )
                     }
                 }

@@ -7,10 +7,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.novaplayer.features.home.presentation.screen.HomeSc
 import com.example.novaplayer.features.player.presentation.PlayerScreen
+import com.example.novaplayer.features.settings.domain.model.AppLanguage
 import com.example.novaplayer.features.settings.presentation.screen.about.AboutScreen
 
 @Composable
-fun NovaPlayerNavigation() {
+fun NovaPlayerNavigation(
+    onLanguageSelected: (AppLanguage) -> Unit,
+) {
     val navController = rememberNavController()
 
     NavHost(
@@ -31,7 +34,8 @@ fun NovaPlayerNavigation() {
                     navController.navigate(
                         AboutScreenRoute
                     )
-                }
+                },
+                onLanguageSelected = onLanguageSelected
             )
         }
         composable<PlayerScreenRoute> { backStackEntry ->

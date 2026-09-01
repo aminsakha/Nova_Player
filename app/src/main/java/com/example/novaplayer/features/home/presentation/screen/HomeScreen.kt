@@ -41,6 +41,7 @@ import com.example.novaplayer.features.home.presentation.tabs.PlayListTab
 import com.example.novaplayer.features.home.presentation.tabs.RecentTab
 import com.example.novaplayer.features.home.presentation.tabs.TracksTab
 import com.example.novaplayer.features.home.presentation.viewmodel.HomeViewModel
+import com.example.novaplayer.features.settings.domain.model.AppLanguage
 import com.example.novaplayer.features.settings.presentation.screen.SettingsPanel
 
 
@@ -48,6 +49,7 @@ import com.example.novaplayer.features.settings.presentation.screen.SettingsPane
 fun HomeSc(
     onTrackClick: (Track) -> Unit,
     onAboutClick: () -> Unit,
+    onLanguageSelected: (AppLanguage) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -169,7 +171,8 @@ fun HomeSc(
         onAboutClick = {
             isSettingsOpen = false
             onAboutClick()
-        }
+        },
+        onLanguageSelected = onLanguageSelected
     )
 }
 
