@@ -53,7 +53,8 @@ fun PlayerScreen(
      * ViewModel خودش با استفاده از GetTrackUseCase
      * اطلاعات کامل Track را دریافت می‌کند.
      */
-    LaunchedEffect(trackUri) {
+
+    LaunchedEffect(Unit) {
         viewModel.onAction(
             PlayerContract.UiAction.SelectSong(
                 trackUri = trackUri
@@ -121,7 +122,7 @@ private fun PlayerScreenContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp)
-                .aspectRatio(1f)
+                .aspectRatio(4f / 5f)
         )
 
         Spacer(
@@ -135,6 +136,10 @@ private fun PlayerScreenContent(
             onFavoriteClick = {
                 onFavoriteClick(currentSong)
             }
+        )
+
+        Spacer(
+            modifier = Modifier.height(24.dp)
         )
 
         PlayerControls(
@@ -200,7 +205,7 @@ private fun CurrentSongInformation(
                     stringResource(R.string.unknown_song)
                 },
                 style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Start,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

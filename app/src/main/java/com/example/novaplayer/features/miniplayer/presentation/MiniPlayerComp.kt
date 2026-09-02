@@ -1,4 +1,4 @@
-package com.example.novaplayer.features.home.presentation.screen.component
+package com.example.novaplayer.features.miniplayer.presentation
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -8,11 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.SkipNext
 import androidx.compose.material.icons.outlined.SkipPrevious
@@ -23,15 +24,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.novaplayer.R
 import com.example.novaplayer.core.ui.theme.AvatarLarge
 import com.example.novaplayer.core.ui.theme.IconLarge
@@ -39,8 +45,13 @@ import com.example.novaplayer.core.ui.theme.IconLarge
 
 @Composable
 fun MiniPlayerComp(
+    viewModel: MiniPlayerViewmodel= hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.connect()
+    }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     Card(
         modifier = modifier,
@@ -49,7 +60,7 @@ fun MiniPlayerComp(
         ),
         shape = CircleShape,
         border = BorderStroke(
-            width = 0.7.dp,
+            width = 2.dp,
             brush = Brush.linearGradient(
                 colors = listOf(
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
@@ -69,20 +80,20 @@ fun MiniPlayerComp(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
 
-            Image(
+            AsyncImage(
+                model = state.artwork,
+                contentDescription = state.title,
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.onSurface, shape = CircleShape)
-                    .size(AvatarLarge)
+                    .size(56.dp)
                     .clip(CircleShape),
-                painter = painterResource(R.drawable.ic_album_placeholder),
-                contentDescription = ""
+                placeholder = painterResource(R.drawable.ic_album_placeholder),
+                error = painterResource(R.drawable.ic_album_placeholder)
             )
-
             Column(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Music Name",
+                    text = state.title,
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -90,7 +101,7 @@ fun MiniPlayerComp(
                 )
 
                 Text(
-                    text = "Singer Name",
+                    text = state.artist,
                     color = MaterialTheme.colorScheme.onSurface.copy(
                         alpha = 0.5f
                     ),
@@ -101,7 +112,7 @@ fun MiniPlayerComp(
             }
 
             IconButton(
-                onClick = {}
+                onClick = {viewModel.previous()}
             ) {
                 Icon(
                     imageVector = Icons.Outlined.SkipPrevious,
@@ -110,18 +121,24 @@ fun MiniPlayerComp(
             }
 
             IconButton(
-                onClick = {}
+                onClick = {
+                    viewModel.playPause()
+                }
             ) {
                 Icon(
-                    imageVector = Icons.Default.PlayArrow,
+                    imageVector = if (state.isPlaying) {
+                        Icons.Default.Pause
+                    } else {
+                        Icons.Default.PlayArrow
+                    },
                     contentDescription = "Play",
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(IconLarge)
                 )
             }
 
             IconButton(
-                onClick = {}
+                onClick = {viewModel.next()}
             ) {
                 Icon(
                     imageVector = Icons.Outlined.SkipNext,
