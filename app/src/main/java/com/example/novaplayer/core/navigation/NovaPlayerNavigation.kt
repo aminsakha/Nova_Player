@@ -23,11 +23,9 @@ fun NovaPlayerNavigation(
         composable<HomeScreenRoute> {
             HomeSc(
                 onTrackClick = { track ->
-
-                    navController.navigate(
-                        PlayerScreenRoute(
-                            trackId = track.uri
-                        )
+                navController.navigate(
+                    PlayerScreenRoute(
+                        trackId = track.uri)
                     )
                 },
                 onAboutClick = {

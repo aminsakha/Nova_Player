@@ -12,7 +12,8 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 private val Context.dataStore by preferencesDataStore(
-    name = "Settings"
+    name = "Settings",
+
 )
 
 @Module

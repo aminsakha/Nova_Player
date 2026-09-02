@@ -42,35 +42,29 @@ fun SettingsPanel(
                     }
             )
 
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .fillMaxHeight()
-                    .fillMaxWidth(0.68f)
+            AnimatedVisibility(
+                visible = true,
+                enter = slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth }
+                ),
+                exit = slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> fullWidth }
+                ),
+                modifier = Modifier.align(Alignment.CenterEnd)
             ) {
-                AnimatedVisibility(
-                    visible = true,
-                    enter = slideInHorizontally(
-                        initialOffsetX = { fullWidth -> fullWidth }
-                    ),
-                    exit = slideOutHorizontally(
-                        targetOffsetX = { fullWidth -> fullWidth }
-                    )
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                MaterialTheme.colorScheme.background
-                            )
-                            .clickable { }
-                    ) {
-                        SettingsScreen(
-                            onClose = onClose,
-                            onAboutClick = onAboutClick,
-                            onLanguageSelected = onLanguageSelected
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth(0.68f)
+                        .background(
+                            MaterialTheme.colorScheme.background
                         )
-                    }
+                ) {
+                    SettingsScreen(
+                        onClose = onClose,
+                        onAboutClick = onAboutClick,
+                        onLanguageSelected = onLanguageSelected
+                    )
                 }
             }
         }

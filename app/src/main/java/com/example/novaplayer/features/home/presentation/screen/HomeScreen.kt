@@ -262,15 +262,3 @@ fun HomeContent(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun HomeContentPreview() {
-    HomeContent(
-        backdrop = rememberLayerBackdrop(),
-        uiState = HomeContract.UiState(
-            tracks = fakeTracks,
-            loadingState = LoadingState.SUCCESS
-        ),
-        onTrackClick = {}
-    )
-}
