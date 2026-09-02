@@ -3,7 +3,9 @@ package com.example.novaplayer.features.settings.presentation.screen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOut
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,9 +29,15 @@ fun SettingsPanel(
 ) {
     AnimatedVisibility(
         visible = visible,
-        enter = fadeIn(),
-        exit = fadeOut()
+        enter = slideInHorizontally(
+            initialOffsetX = { it }
+        ),
+        exit = slideOutHorizontally(
+            targetOffsetX = { it }
+        )
     ) {
+
+
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
