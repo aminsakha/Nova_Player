@@ -7,4 +7,82 @@
 
     <string name="loading">Loading...</string>
     <string name="error_loading_tracks">Error loading tracks</string>
+
+    <string name="settings">Settings</string>
+    <string name="appearance">Appearance</string>
+    <string name="about">About</string>
+
+
+    <string name="language">Language</string>
+    <string name="english">English</string>
+    <string name="persian">Persian</string>
+
+    <string name="theme">Theme</string>
+    <string name="system">System</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+
+    <string name="about_us">About Us</string>
+
+    <string name="feel_the_music">Your music, your way.</string>
+    <string name="version">Version 1.0.0</string>
+
+    <string name="about_project">About the Project</string>
+
+    <string name="about_description">
+    Nova Player is a modern Android music player designed to provide
+    a clean and enjoyable way to discover and listen to music stored
+    on your device.
+</string>
+
+    <string name="our_team">Our Team</string>
+
+    <string name="team_lead">Team Lead</string>
+    <string name="team_members">Team Members</string>
+
+    <string name="Amin_Sakha">Amin Sakha</string>
+    <string name="Behnam_Mahjoob">Behnam Mahjoob</string>
+    <string name="Abolfazl_Khalili">Abolfazl Khalili</string>
+    <string name="Leila_Abdi">Leila Abdi</string>
+    <string name="Parsa_Ghazvinian">Parsa Ghazvinian</string>
+    <string name="Shayan_Armannia">Shayan Armannia</string>
+
+    <string name="more_information">More Information</string>
+
+    <string name="contact_us">Contact Us</string>
+
+    <string name="contact_us_summary">
+    Get in touch with the NovaPlayer team
+</string>
+
+    <string name="contact_us_description">
+    Have a question, suggestion, or found a problem?
+    Feel free to contact one of our team members.
+</string>
+
+    <string name="Amin_Sakha_email">amin.sakha@gmail.com</string>
+    <string name="Behnam_Mahjoob_email">behnam.mahjoob@gmail.com</string>
+    <string name="Abolfazl_Khalili_email">abolfazl.khalili@gmail.com</string>
+    <string name="Leila_Abdi_email">leila.abdi@gmail.com</string>
+    <string name="Parsa_Ghazvinian_email">parsa.ghazvinian@gmail.com</string>
+    <string name="Shayan_Armannia_email">shayan.armannia@gmail.com</string>
+
+    <string name="close">Close</string>
+
+    <string name="privacy_policy">Privacy Policy</string>
+
+    <string name="privacy_policy_summary">
+    Learn how NovaPlayer handles your information
+</string>
+
+    <string name="back">Back</string>
+
+    <string name="close_settings">Close settings</string>
+
+    <string name="music_name">Music Name</string>
+    <string name="singer_name">Singer Name</string>
+
+    <string name="unknown_song">Unknown song</string>
+    <string name="unknown_artist">Unknown artist</string>
 </resources>
+

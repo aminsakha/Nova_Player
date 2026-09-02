@@ -18,24 +18,27 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.novaplayer.R
 import com.example.novaplayer.core.ui.theme.Space5
 
 @Composable
-
 fun Toolbar(
-    showAddIcon: Boolean
+    showAddIcon: Boolean,
+    onSettingsClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.padding(Space5)
     ) {
         Text(
-            text = "Novaplayer",
+            text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
@@ -80,11 +83,15 @@ fun Toolbar(
                 contentDescription = "Search"
             )
 
-            Icon(
-                modifier = Modifier.size(28.dp),
-                imageVector = Icons.Default.Menu,
-                contentDescription = "Menu"
-            )
+            IconButton(
+                onClick = onSettingsClick
+            ) {
+                Icon(
+                    modifier = Modifier.size(28.dp),
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Menu"
+                )
+            }
         }
     }
 }

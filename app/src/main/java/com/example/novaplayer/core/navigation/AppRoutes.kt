@@ -11,3 +11,6 @@ object  HomeScreenRoute
 data class PlayerScreenRoute(
     val trackId: String
 )
+
+@Serializable
+object AboutScreenRoute

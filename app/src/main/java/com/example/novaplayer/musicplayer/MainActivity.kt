@@ -1,33 +1,55 @@
 package com.example.novaplayer.musicplayer
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import com.example.novaplayer.R
-import com.example.novaplayer.core.ui.theme.NovaPlayerTheme
-import com.example.novaplayer.features.player.domain.CurrentSong
-import com.example.novaplayer.features.player.presentation.PlayerScreen
+import androidx.lifecycle.lifecycleScope
+import com.example.novaplayer.core.locale.AppLocaleManager
+import com.example.novaplayer.features.settings.domain.usecase.ObserveLanguageUseCase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var observeLanguageUseCase: ObserveLanguageUseCase
+
+    @Inject
+    lateinit var appLocaleManager: AppLocaleManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
 
-        setContent {
-            MusicPlayerApp()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            observeLegacyLanguage()
+        }
 
+        setContent {
+            MusicPlayerApp(
+                onLanguageSelected = { language ->
+                    appLocaleManager.setLanguage(
+                        activity = this@MainActivity,
+                        language = language
+                    )
+                }
+            )
+        }
+    }
+
+    private fun observeLegacyLanguage() {
+        lifecycleScope.launch {
+            observeLanguageUseCase().collect { language ->
+                appLocaleManager.setLanguage(
+                    activity = this@MainActivity,
+                    language = language
+                )
+            }
         }
     }
 }

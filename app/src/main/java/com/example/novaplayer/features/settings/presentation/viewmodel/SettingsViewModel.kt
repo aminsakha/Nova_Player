@@ -1,15 +1,18 @@
 package com.example.novaplayer.features.settings.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.novaplayer.features.settings.domain.model.AppLanguage
+import com.example.novaplayer.features.settings.domain.model.ThemeMode
+import com.example.novaplayer.features.settings.domain.usecase.ObserveLanguageUseCase
 import com.example.novaplayer.features.settings.domain.usecase.ObserveThemeUseCase
+import com.example.novaplayer.features.settings.domain.usecase.SetLanguageUseCase
 import com.example.novaplayer.features.settings.domain.usecase.SetThemeUseCase
 import com.example.novaplayer.features.settings.presentation.contract.SettingsContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import androidx.lifecycle.viewModelScope
-import com.example.novaplayer.features.settings.domain.model.ThemeMode
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,9 +20,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val observeThemeUseCase: ObserveThemeUseCase,
-    private val setThemeUseCase: SetThemeUseCase
-): ViewModel()
-{
+    private val setThemeUseCase: SetThemeUseCase,
+    private val observeLanguageUseCase: ObserveLanguageUseCase,
+    private val setLanguageUseCase: SetLanguageUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(
         SettingsContract.UiState()
     )
@@ -28,17 +32,21 @@ class SettingsViewModel @Inject constructor(
 
     init {
         observeTheme()
+        observeLanguage()
     }
 
-    fun onAction(action: SettingsContract.UiAction){
-        when(action){
+    fun onAction(action: SettingsContract.UiAction) {
+        when (action) {
             is SettingsContract.UiAction.SetTheme -> {
                 setTheme(action.theme)
             }
+
+            is SettingsContract.UiAction.SetLanguage -> {
+                setLanguage(action.language)
+            }
         }
     }
-
-    private fun observeTheme(){
+    private fun observeTheme() {
         viewModelScope.launch {
             observeThemeUseCase().collect { theme ->
                 _uiState.update {
@@ -47,10 +55,23 @@ class SettingsViewModel @Inject constructor(
             }
         }
     }
-
     private fun setTheme(theme: ThemeMode) {
         viewModelScope.launch {
             setThemeUseCase(theme)
+        }
+    }
+    private fun observeLanguage() {
+        viewModelScope.launch {
+            observeLanguageUseCase().collect { language ->
+                _uiState.update {
+                    it.copy(language = language)
+                }
+            }
+        }
+    }
+    private fun setLanguage(language: AppLanguage) {
+        viewModelScope.launch {
+            setLanguageUseCase(language)
         }
     }
 }
