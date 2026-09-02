@@ -2,7 +2,9 @@ package com.example.novaplayer.features.settings.presentation.screen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.novaplayer.R
 import com.example.novaplayer.features.settings.domain.model.AppLanguage
@@ -63,60 +66,69 @@ fun LanguageSelector(
                     expanded = !expanded
                 }
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = selectedText,
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        fontWeight = FontWeight.Light,
+                        text = selectedText,
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
 
-                Icon(
-                    imageVector = if (expanded) {
-                        Icons.Default.KeyboardArrowUp
-                    } else {
-                        Icons.Default.KeyboardArrowDown
+                    Icon(
+                        imageVector = if (expanded) {
+                            Icons.Default.KeyboardArrowUp
+                        } else {
+                            Icons.Default.KeyboardArrowDown
+                        },
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                // Dropdown
+                DropdownMenu(
+                    modifier = Modifier.fillMaxWidth(0.56f),
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
                     },
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    AppLanguage.entries.forEach { language ->
 
-        // Dropdown
-        DropdownMenu(
-            modifier = Modifier.fillMaxWidth(0.56f),
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            },
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            AppLanguage.entries.forEach { language ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    fontWeight = FontWeight.Light,
+                                    text = when (language) {
+                                        AppLanguage.EN ->
+                                            stringResource(R.string.english)
 
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = when (language) {
-                                AppLanguage.EN ->
-                                    stringResource(R.string.english)
-
-                                AppLanguage.FA ->
-                                    stringResource(R.string.persian)
+                                        AppLanguage.FA ->
+                                            stringResource(R.string.persian)
+                                    }
+                                )
+                            },
+                            onClick = {
+                                onLanguageSelected(language)
+                                expanded = false
                             }
                         )
-                    },
-                    onClick = {
-                        onLanguageSelected(language)
-                        expanded = false
                     }
-                )
+                }
             }
+
         }
+
+
     }
 }
