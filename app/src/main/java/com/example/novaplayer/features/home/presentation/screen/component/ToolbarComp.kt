@@ -18,18 +18,25 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.novaplayer.core.ui.theme.Space5
+import com.example.novaplayer.features.playlist.presentation.PlaylistIntent
+import com.example.novaplayer.features.playlist.presentation.PlaylistViewModel
 
 @Composable
 
 fun Toolbar(
-    showAddIcon: Boolean
+    showAddIcon: Boolean,
+    onAddPlaylistClick: () -> Unit
+
 ) {
     Row(
         modifier = Modifier.padding(Space5)
@@ -46,7 +53,8 @@ fun Toolbar(
         )
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             AnimatedVisibility(
                 visible = showAddIcon,
@@ -67,11 +75,14 @@ fun Toolbar(
                     animationSpec = tween(150)
                 )
             ) {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add playlist"
-                )
+                IconButton(onClick = onAddPlaylistClick) {
+                    Icon(
+                        modifier = Modifier.size(28.dp),
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add playlist"
+                    )
+
+                }
             }
 
             Icon(

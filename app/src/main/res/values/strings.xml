@@ -7,4 +7,7 @@
 
     <string name="loading">Loading...</string>
     <string name="error_loading_tracks">Error loading tracks</string>
+    <string name="playlist_name">Playlist Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
 </resources>

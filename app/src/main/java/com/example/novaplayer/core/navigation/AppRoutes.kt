@@ -1,13 +1,24 @@
 package com.example.novaplayer.core.navigation
 
-import com.example.novaplayer.features.home.domain.model.Track
 import kotlinx.serialization.Serializable
 
 @Serializable
-object  HomeScreenRoute
-
+object HomeScreenRoute
 
 @Serializable
 data class PlayerScreenRoute(
     val trackId: String
+)
+
+@Serializable
+data object PlaylistScreenRoute
+
+@Serializable
+data class PlaylistDetailRoute(
+    val playlistId: Long
+)
+
+@Serializable
+data class SelectTrackRoute(
+    val playlistId: Long
 )

@@ -43,6 +43,9 @@ import com.example.novaplayer.features.home.presentation.tabs.PlayListTab
 import com.example.novaplayer.features.home.presentation.tabs.RecentTab
 import com.example.novaplayer.features.home.presentation.tabs.TracksTab
 import com.example.novaplayer.features.home.presentation.viewmodel.HomeViewModel
+import com.example.novaplayer.features.playlist.presentation.PlaylistIntent
+import com.example.novaplayer.features.playlist.presentation.PlaylistState
+import com.example.novaplayer.features.playlist.presentation.PlaylistViewModel
 import com.kyant.backdrop.backdrops.LayerBackdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
@@ -55,10 +58,14 @@ import com.kyant.backdrop.effects.vibrancy
 @Composable
 fun HomeSc(
     viewModel: HomeViewModel = hiltViewModel(),
-    onTrackClick: (Track) -> Unit
+    playlistViewModel: PlaylistViewModel = hiltViewModel(),
+    onTrackClick: (Track) -> Unit,
+    onPlaylistClick: (Long) -> Unit
 ) {
     val backdrop = rememberLayerBackdrop()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val playlistState by playlistViewModel.state.collectAsStateWithLifecycle()
+
 
     AudioPermissionHandler(
         onPermissionGranted = {
@@ -69,29 +76,48 @@ fun HomeSc(
     )
 
     HomeContent(
-        backdrop,
+        backdrop = backdrop,
         uiState = uiState,
-        onTrackClick = onTrackClick
+        onTrackClick = onTrackClick,
+        onPlaylistClick = onPlaylistClick,
+        onAddPlaylistClick = {
+            playlistViewModel.onIntent(
+                PlaylistIntent.AddPlaylistClicked
+            )
+        },
+        onPlaylistIntent = { intent ->
+            playlistViewModel.onIntent(intent)
+        },
+        playlistState = playlistState
     )
+    
 }
 
 @Composable
 fun HomeContent(
     backdrop: LayerBackdrop,
     uiState: HomeContract.UiState,
+    playlistState: PlaylistState,
     onTrackClick: (Track) -> Unit,
+    onPlaylistClick: (Long) -> Unit,
+    onAddPlaylistClick: () -> Unit,
+    onPlaylistIntent: (PlaylistIntent) -> Unit
+
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
     var selectedTab by rememberSaveable {
         mutableStateOf(HomeTabs.TRACKS)
     }
-    var showAddPlaylistIcon =selectedTab == HomeTabs.PLAYLISTS
+    var showAddPlaylistIcon = selectedTab == HomeTabs.PLAYLISTS
 
     Scaffold(
         contentWindowInsets = WindowInsets.captionBar,
         containerColor = Color.Transparent,
         topBar = {
-            Toolbar(showAddIcon = showAddPlaylistIcon)
+            Toolbar(
+                showAddIcon = showAddPlaylistIcon,
+                onAddPlaylistClick = onAddPlaylistClick
+            )
         },
 
         ) { innerPadding ->
@@ -117,7 +143,11 @@ fun HomeContent(
 
                     HomeTabs.PLAYLISTS -> {
 
-                        PlayListTab()
+                        PlayListTab(
+                            state = playlistState,
+                            onIntent = onPlaylistIntent,
+                            onPlaylistClick = onPlaylistClick
+                        )
                     }
 
                     HomeTabs.TRACKS -> {
@@ -235,6 +265,10 @@ fun HomeContentPreview() {
             tracks = fakeTracks,
             loadingState = LoadingState.SUCCESS
         ),
-
-        ) {}
+        onTrackClick = {},
+        onPlaylistClick = {},
+        onAddPlaylistClick = {},
+        playlistState = TODO(),
+        onPlaylistIntent = TODO()
+    )
 }
