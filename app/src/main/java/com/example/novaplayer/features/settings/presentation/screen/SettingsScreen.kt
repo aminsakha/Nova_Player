@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,8 +38,13 @@ import com.example.novaplayer.features.settings.presentation.screen.components.T
 import com.example.novaplayer.features.settings.presentation.viewmodel.SettingsViewModel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MenuOpen
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.ui.platform.LocalContext
 import com.example.novaplayer.features.settings.domain.model.AppLanguage
+import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 
 @Composable
 fun SettingsScreen(
@@ -46,6 +53,7 @@ fun SettingsScreen(
     onLanguageSelected: (AppLanguage) -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
+
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
@@ -77,7 +85,8 @@ fun SettingsScreen(
                 onClick = onClose
             ) {
                 Icon(
-                    imageVector = Icons.Default.Close,
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    modifier = Modifier.size(28.dp),
                     contentDescription = stringResource(R.string.close_settings)
                 )
             }
@@ -152,16 +161,12 @@ fun SettingsScreen(
 private fun AboutCard(
     onClick: () -> Unit
 ) {
-    Card(
+    OutlinedCard (
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                alpha = 0.35f
-            )
-        )
+
     ) {
         Row(
             modifier = Modifier
