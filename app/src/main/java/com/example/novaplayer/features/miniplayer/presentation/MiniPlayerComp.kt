@@ -46,7 +46,8 @@ import com.example.novaplayer.core.ui.theme.IconLarge
 @Composable
 fun MiniPlayerComp(
     viewModel: MiniPlayerViewmodel= hiltViewModel(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    setOnMiniPlayerClick:(String)->Unit
 ) {
     LaunchedEffect(Unit) {
         viewModel.connect()
@@ -54,6 +55,7 @@ fun MiniPlayerComp(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     Card(
+        onClick = {setOnMiniPlayerClick(state.currentMediaItem?.mediaId?:"")},
         modifier = modifier,
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent

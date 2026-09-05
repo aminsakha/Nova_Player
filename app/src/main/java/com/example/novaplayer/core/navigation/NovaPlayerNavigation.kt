@@ -23,14 +23,23 @@ fun NovaPlayerNavigation(
         composable<HomeScreenRoute> {
             HomeSc(
                 onTrackClick = { track ->
-                navController.navigate(
-                    PlayerScreenRoute(
-                        trackId = track.uri)
+                    navController.navigate(
+                        PlayerScreenRoute(
+                            trackId = track.uri
+                        )
                     )
                 },
                 onAboutClick = {
                     navController.navigate(
                         AboutScreenRoute
+                    )
+                },
+                onMiniPlayerClick = { trackId ->
+                    navController.navigate(
+                        PlayerScreenRoute(
+                            trackId = trackId
+
+                        )
                     )
                 },
                 onLanguageSelected = onLanguageSelected

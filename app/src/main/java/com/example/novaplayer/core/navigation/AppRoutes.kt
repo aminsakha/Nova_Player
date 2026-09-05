@@ -14,3 +14,6 @@ data class PlayerScreenRoute(
 
 @Serializable
 object AboutScreenRoute
+
+@Serializable
+object MiniPlayerScreenRoute

@@ -58,6 +58,7 @@ fun HomeSc(
     onTrackClick: (Track) -> Unit,
     onAboutClick: () -> Unit,
     onLanguageSelected: (AppLanguage) -> Unit,
+    onMiniPlayerClick: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val backdrop = rememberLayerBackdrop()
@@ -82,6 +83,9 @@ fun HomeSc(
         onTrackClick = onTrackClick,
         onSettingsClick = {
             isSettingsOpen = true
+        },
+        onMiniPlayerClick = {
+            onMiniPlayerClick(it)
         }
     )
 
@@ -107,6 +111,7 @@ fun HomeContent(
     uiState: HomeContract.UiState,
     onTrackClick: (Track) -> Unit,
     onSettingsClick: () -> Unit,
+    onMiniPlayerClick:(String)->Unit
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
 
@@ -255,7 +260,10 @@ fun HomeContent(
                         }
                     )
             ) {
-                MiniPlayerComp()
+                MiniPlayerComp{
+                    onMiniPlayerClick(it)
+
+                }
             }
         }
     }
