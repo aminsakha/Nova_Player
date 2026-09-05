@@ -9,7 +9,8 @@ object SearchContract {
         val searchResults: List<Track> = emptyList(),
         val recentSearches: List<String> = emptyList(),
         val isLoading: Boolean = true,
-        val error: SearchError? = null
+        val error: SearchError? = null,
+        val shouldRequestAudioPermission: Boolean = true
     ) {
         val hasNoResults: Boolean
             get() = query.isNotBlank() &&
@@ -36,6 +37,10 @@ object SearchContract {
             val track: Track
         ) : UiAction
 
+        data class PermissionResult(
+            val isGranted: Boolean
+        ) : UiAction
+
         data object SubmitSearch : UiAction
 
         data object Retry : UiAction
@@ -43,5 +48,6 @@ object SearchContract {
 }
 
 enum class SearchError {
-    PERMISSION_DENIED
+    PERMISSION_DENIED,
+    GENERAL
 }
