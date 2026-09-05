@@ -15,6 +15,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import com.example.novaplayer.features.home.presentation.permission.AudioPermissionHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,6 +42,25 @@ fun SearchScreen(
 ) {
     val uiState by
     viewModel.uiState.collectAsStateWithLifecycle()
+
+    if (uiState.shouldRequestAudioPermission) {
+        AudioPermissionHandler(
+            onPermissionGranted = {
+                viewModel.onAction(
+                    SearchContract.UiAction.PermissionResult(
+                        isGranted = true
+                    )
+                )
+            },
+            onPermissionDenied = {
+                viewModel.onAction(
+                    SearchContract.UiAction.PermissionResult(
+                        isGranted = false
+                    )
+                )
+            }
+        )
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
