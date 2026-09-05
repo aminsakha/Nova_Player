@@ -183,8 +183,7 @@ fun SearchScreen(
                     }
                 }
 
-                uiState.error ==
-                        SearchError.PERMISSION_DENIED -> {
+                uiState.error != null -> {
                     item {
                         Column(
                             modifier = Modifier
@@ -197,11 +196,16 @@ fun SearchScreen(
                         ) {
                             Text(
                                 text = stringResource(
-                                    R.string
-                                        .search_permission_required
+                                    when (uiState.error) {
+                                        SearchError.PERMISSION_DENIED ->
+                                            R.string.search_permission_required
+
+                                        SearchError.GENERAL,
+                                        null ->
+                                            R.string.search_general_error
+                                    }
                                 ),
-                                color =
-                                    MaterialTheme.colorScheme.error
+                                color = MaterialTheme.colorScheme.error
                             )
 
                             Button(
