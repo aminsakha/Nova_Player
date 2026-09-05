@@ -54,14 +54,13 @@ fun PlayerScreen(
      * اطلاعات کامل Track را دریافت می‌کند.
      */
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(trackUri) {
         viewModel.onAction(
             PlayerContract.UiAction.SelectSong(
                 trackUri = trackUri
             )
         )
     }
-
     LaunchedEffect(uiState.errorMessage) {
         val errorMessage =
             uiState.errorMessage

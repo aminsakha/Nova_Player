@@ -263,7 +263,10 @@ class PlayerController @Inject constructor(
         uri: String,
         song: CurrentSong
     ) {
-
+        Log.d(
+            TAG,
+            "🔥 playSelectedSong CALLED - uri=$uri"
+        )
         if (uri.isBlank()) {
             reportPlaybackError(
                 PlaybackError.EmptySongUri
@@ -345,6 +348,10 @@ class PlayerController @Inject constructor(
         songs: List<CurrentSong>,
         selectedIndex: Int
     ) {
+        Log.d(
+            TAG,
+            "🔥 playPlaylist CALLED - index=$selectedIndex"
+        )
         val mediaController = controller ?: run {
             reportPlaybackError(
                 PlaybackError.PlayerNotConnected

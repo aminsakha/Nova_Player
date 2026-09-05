@@ -98,37 +98,34 @@ class PlayerViewModel @Inject constructor(
     // Select Song
     // ------------------------------------------------------------------------
 
-    private fun selectSong(
-        trackUri: String
-    ) {
-        currentIndex = playlist.indexOfFirst {
-            it.uri == trackUri
-        }
-        if (trackUri.isBlank()) {
-            _uiState.update {
-                it.copy(
-                    errorMessage = "Invalid track URI"
-                )
-            }
-            return
-        }
+    private fun selectSong(trackUri: String) {
+
+        if (trackUri.isBlank()) return
 
         if (!isPlayerConnected) {
             pendingTrackUri = trackUri
-
-            _uiState.update {
-                it.copy(
-                    playbackStatus = PlaybackStatus.PAUSED,
-                    currentPositionMs = 0L,
-                    durationMs = 0L,
-                    errorMessage = null
-                )
-            }
-
             return
         }
 
+        // اگر همین آهنگ الان در Player است،
+        // فقط صفحه را نمایش بده و هیچ کاری با Player نکن.
         if (playerController.isCurrentMediaItem(trackUri)) {
+            Log.d(
+                "PLAYER_DEBUG",
+                "Same track → skip reload"
+            )
+            return
+        }
+
+        currentIndex = playlist.indexOfFirst {
+            it.uri == trackUri
+        }
+
+        if (currentIndex == -1) {
+            Log.d(
+                "PLAYER_DEBUG",
+                "Track not found in playlist: $trackUri"
+            )
             return
         }
 
