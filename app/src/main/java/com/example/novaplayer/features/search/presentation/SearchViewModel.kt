@@ -12,6 +12,7 @@ import com.example.novaplayer.features.search.domain.usecase.SearchTracksUseCase
 import com.example.novaplayer.features.search.presentation.contract.SearchContract
 import com.example.novaplayer.features.search.presentation.contract.SearchError
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,7 +43,6 @@ class SearchViewModel @Inject constructor(
 
     init {
         observeRecentSearches()
-        loadTracks()
     }
 
     fun onAction(action: SearchContract.UiAction) {
@@ -63,12 +63,53 @@ class SearchViewModel @Inject constructor(
                 saveCurrentQuery()
             }
 
+            is SearchContract.UiAction.PermissionResult -> {
+                handlePermissionResult(
+                    isGranted = action.isGranted
+                )
+            }
+
             SearchContract.UiAction.SubmitSearch -> {
                 saveCurrentQuery()
             }
 
             SearchContract.UiAction.Retry -> {
-                loadTracks()
+                requestAudioPermission()
+            }
+        }
+    }
+
+    private fun requestAudioPermission() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                isLoading = true,
+                error = null,
+                shouldRequestAudioPermission = true
+            )
+        }
+    }
+
+    private fun handlePermissionResult(
+        isGranted: Boolean
+    ) {
+        if (isGranted) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    shouldRequestAudioPermission = false
+                )
+            }
+
+            loadTracks()
+        } else {
+            allTracks = emptyList()
+
+            _uiState.update { currentState ->
+                currentState.copy(
+                    searchResults = emptyList(),
+                    isLoading = false,
+                    error = SearchError.PERMISSION_DENIED,
+                    shouldRequestAudioPermission = false
+                )
             }
         }
     }
@@ -96,6 +137,8 @@ class SearchViewModel @Inject constructor(
                         error = null
                     )
                 }
+            } catch (error: CancellationException) {
+                throw error
             } catch (error: SecurityException) {
                 Log.e(
                     TAG,
@@ -103,14 +146,35 @@ class SearchViewModel @Inject constructor(
                     error
                 )
 
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        searchResults = emptyList(),
-                        isLoading = false,
-                        error = SearchError.PERMISSION_DENIED
-                    )
-                }
+                showLoadError(
+                    error = SearchError.PERMISSION_DENIED
+                )
+            } catch (error: Exception) {
+                Log.e(
+                    TAG,
+                    "Could not load audio tracks",
+                    error
+                )
+
+                showLoadError(
+                    error = SearchError.GENERAL
+                )
             }
+        }
+    }
+
+    private fun showLoadError(
+        error: SearchError
+    ) {
+        allTracks = emptyList()
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                searchResults = emptyList(),
+                isLoading = false,
+                error = error,
+                shouldRequestAudioPermission = false
+            )
         }
     }
 
