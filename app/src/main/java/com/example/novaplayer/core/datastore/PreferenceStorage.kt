@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PreferenceStorage @Inject constructor(
+    @SettingsDataStore
     private val dataStore: DataStore<Preferences>
 ) {
 

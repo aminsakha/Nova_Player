@@ -165,4 +165,92 @@ class MediaStoreAudioDataSource @Inject constructor(
 
         return tracks
     }
+
+    override suspend fun getTrackById(id: Long): TrackDto? {
+
+        val collection =
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+
+        val projection = arrayOf(
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.DURATION
+        )
+
+        val selection =
+            "${MediaStore.Audio.Media._ID} = ?"
+
+        context.contentResolver.query(
+            collection,
+            projection,
+            selection,
+            arrayOf(id.toString()),
+            null
+        )?.use { cursor ->
+
+            if (cursor.moveToFirst()) {
+
+                val trackId =
+                    cursor.getLong(
+                        cursor.getColumnIndexOrThrow(
+                            MediaStore.Audio.Media._ID
+                        )
+                    )
+
+                val albumId =
+                    cursor.getLong(
+                        cursor.getColumnIndexOrThrow(
+                            MediaStore.Audio.Media.ALBUM_ID
+                        )
+                    )
+
+                val albumArtUri =
+                    ContentUris.withAppendedId(
+                        Uri.parse(
+                            "content://media/external/audio/albumart"
+                        ),
+                        albumId
+                    )
+
+                return TrackDto(
+                    id = trackId,
+                    uri = ContentUris.withAppendedId(
+                        collection,
+                        trackId
+                    ).toString(),
+                    title =
+                        cursor.getString(
+                            cursor.getColumnIndexOrThrow(
+                                MediaStore.Audio.Media.TITLE
+                            )
+                        ) ?: "Unknown",
+                    artist =
+                        cursor.getString(
+                            cursor.getColumnIndexOrThrow(
+                                MediaStore.Audio.Media.ARTIST
+                            )
+                        ) ?: "Unknown Artist",
+                    album =
+                        cursor.getString(
+                            cursor.getColumnIndexOrThrow(
+                                MediaStore.Audio.Media.ALBUM
+                            )
+                        ) ?: "Unknown Album",
+                    duration =
+                        cursor.getLong(
+                            cursor.getColumnIndexOrThrow(
+                                MediaStore.Audio.Media.DURATION
+                            )
+                        ),
+                    albumArtUri =
+                        albumArtUri.toString()
+                )
+            }
+        }
+
+        return null
+    }
 }

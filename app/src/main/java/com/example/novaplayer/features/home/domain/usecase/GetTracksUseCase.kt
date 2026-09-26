@@ -14,4 +14,7 @@ class GetTracksUseCase @Inject constructor(
     suspend fun getTrack(uri:String): Track?{
         return repository.getTrack(uri)
     }
+    suspend fun getTrackById(id: Long): Track? {
+        return repository.getTrackById(id)
+    }
 }

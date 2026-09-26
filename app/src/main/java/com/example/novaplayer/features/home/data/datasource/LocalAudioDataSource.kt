@@ -8,4 +8,5 @@ interface LocalAudioDataSource {
     suspend fun getTrack(uri: String): TrackDto?
 
     suspend fun getAllTracks(): List<TrackDto>
+    suspend fun getTrackById(id: Long): TrackDto?
 }

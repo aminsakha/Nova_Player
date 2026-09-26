@@ -23,4 +23,10 @@ class TrackRepositoryImpl @Inject constructor(
             .getAllTracks()
             .map { it.toDomain() }
     }
+
+    override suspend fun getTrackById(id: Long): Track? {
+        return dataSource
+            .getTrackById(id)
+            ?.toDomain()
+    }
 }

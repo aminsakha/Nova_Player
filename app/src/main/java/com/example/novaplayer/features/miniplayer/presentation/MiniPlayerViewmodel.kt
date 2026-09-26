@@ -3,6 +3,8 @@ package com.example.novaplayer.features.miniplayer.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.novaplayer.core.datastore.PreferenceStorage
+import com.example.novaplayer.core.datastore.player.TrackStorage
 import com.example.novaplayer.core.media.controller.PlayerController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MiniPlayerViewmodel @Inject constructor(
-    private val mediaController: PlayerController
+    private val mediaController: PlayerController,
+    private val trackStorage: TrackStorage,
+
 ): ViewModel() {
 
     val uiState: StateFlow<MiniPlayerUiState> =

@@ -11,11 +11,14 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import com.example.novaplayer.core.datastore.player.TrackStorage
 import com.example.novaplayer.core.media.model.PlaybackError
 import com.example.novaplayer.core.media.service.PlaybackService
 import com.example.novaplayer.features.player.domain.CurrentSong
 import com.example.novaplayer.features.player.presentation.PlayerContract
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,13 +27,16 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import javax.inject.Singleton
 
 @Singleton
 class PlayerController @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val trackStorage: TrackStorage
 ) {
     private val mutableCurrentMediaItem =
         MutableStateFlow<MediaItem?>(null)
@@ -66,6 +72,14 @@ class PlayerController @Inject constructor(
         ) {
 
             mutableCurrentMediaItem.value = mediaItem
+            val trackId = mediaItem?.mediaId.orEmpty()
+
+            if (trackId.isNotEmpty()) {
+                CoroutineScope(Dispatchers.IO).launch {
+
+                trackStorage.setTrackId(trackId)
+                }
+            }
         }
 
         override fun onIsPlayingChanged(
@@ -86,7 +100,75 @@ class PlayerController @Inject constructor(
             )
         }
     }
+    fun restoreSong(song: CurrentSong) {
 
+        val mediaController =
+            controller ?: run {
+                reportPlaybackError(
+                    PlaybackError.PlayerNotConnected
+                )
+                return
+            }
+
+        if (song.uri.isBlank()) {
+            reportPlaybackError(
+                PlaybackError.EmptySongUri
+            )
+            return
+        }
+
+        try {
+
+            val mediaItem =
+                MediaItem.Builder()
+                    .setMediaId(song.id.toString())
+                    .setUri(song.uri)
+                    .setMediaMetadata(
+                        MediaMetadata.Builder()
+                            .setTitle(song.title)
+                            .setArtist(song.artist)
+                            .setArtworkUri(
+                                song.albumArtUri?.toUri()
+                            )
+                            .build()
+                    )
+                    .build()
+
+            mediaController.setMediaItem(
+                mediaItem
+            )
+
+            mediaController.prepare()
+
+            // مهم:
+            // StateFlow را هم بلافاصله آپدیت می‌کنیم
+            // تا MiniPlayer بتواند آهنگ Restore شده را ببیند.
+            mutableCurrentMediaItem.value =
+                mediaItem
+
+            mutableIsPlaying.value =
+                mediaController.isPlaying
+
+            Log.d(
+                TAG,
+                "Last track restored: ${song.title}"
+            )
+
+        } catch (error: Exception) {
+
+            Log.e(
+                TAG,
+                "Unable to restore last track",
+                error
+            )
+
+            reportPlaybackError(
+                playbackError =
+                    PlaybackError.InvalidPlayerState,
+                cause = error
+            )
+        }
+    }
     suspend fun connect() {
         Log.d(TAG, "CONNECT START")
 
@@ -267,6 +349,7 @@ class PlayerController @Inject constructor(
             TAG,
             "🔥 playSelectedSong CALLED - uri=$uri"
         )
+
         if (uri.isBlank()) {
             reportPlaybackError(
                 PlaybackError.EmptySongUri
@@ -283,23 +366,22 @@ class PlayerController @Inject constructor(
             }
 
         try {
-
             val mediaItem =
                 MediaItem.Builder()
+                    .setMediaId(song.id.toString())
                     .setUri(uri)
                     .setMediaMetadata(
                         MediaMetadata.Builder()
                             .setTitle(song.title)
                             .setArtist(song.artist)
-                            .setArtworkUri(song.albumArtUri?.toUri())
+                            .setArtworkUri(
+                                song.albumArtUri?.toUri()
+                            )
                             .build()
                     )
                     .build()
 
-            mediaController.setMediaItem(
-                mediaItem
-            )
-
+            mediaController.setMediaItem(mediaItem)
             mediaController.prepare()
             mediaController.play()
 
@@ -309,37 +391,29 @@ class PlayerController @Inject constructor(
             )
 
         } catch (error: IllegalArgumentException) {
-
             reportPlaybackError(
-                playbackError =
-                    PlaybackError.InvalidSongUri,
+                playbackError = PlaybackError.InvalidSongUri,
                 cause = error
             )
 
         } catch (error: SecurityException) {
-
             reportPlaybackError(
-                playbackError =
-                    PlaybackError.PermissionDenied,
+                playbackError = PlaybackError.PermissionDenied,
                 cause = error
             )
 
         } catch (error: IllegalStateException) {
-
             reportPlaybackError(
-                playbackError =
-                    PlaybackError.InvalidPlayerState,
+                playbackError = PlaybackError.InvalidPlayerState,
                 cause = error
             )
 
         } catch (error: RuntimeException) {
-
             Log.e(
                 TAG,
                 "Unexpected error while playing selected song",
                 error
             )
-
             throw error
         }
     }

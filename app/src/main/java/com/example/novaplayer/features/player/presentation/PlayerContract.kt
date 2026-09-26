@@ -36,6 +36,8 @@ object PlayerContract {
         data object Stop : UiAction
 
         data object ClearError : UiAction
+
+
     }
 }
 

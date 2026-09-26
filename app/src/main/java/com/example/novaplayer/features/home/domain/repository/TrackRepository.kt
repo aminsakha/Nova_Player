@@ -8,4 +8,5 @@ interface TrackRepository {
     suspend fun getTrack(uri: String): Track?
 
     suspend fun getAllTracks(): List<Track>
+    suspend fun getTrackById(id: Long): Track?
 }
